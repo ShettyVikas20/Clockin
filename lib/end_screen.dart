@@ -15,7 +15,7 @@ class _SplashScreenState extends State<EndScreen> with SingleTickerProviderState
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive); // to remove top and bottom bars
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => HomeScreen(),
