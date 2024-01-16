@@ -4,7 +4,7 @@
             "outputFile": "com.example.attendanaceapp-mergeDebugResources-6:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Ganglia Attendence\\ganglia\\Attendance_system\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Clockin\\Attendance_system\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

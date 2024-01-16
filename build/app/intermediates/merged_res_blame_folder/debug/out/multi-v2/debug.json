@@ -515,7 +515,7 @@
             "outputFile": "com.example.attendanaceapp-merged_res-8:/values-night-v8_values-night-v8.arsc.flat",
             "map": [
                 {
-                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Ganglia Attendence\\ganglia\\Attendance_system\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Clockin\\Attendance_system\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -1600,6 +1600,25 @@
             "outputFile": "com.example.attendanaceapp-merged_res-8:/values_values.arsc.flat",
             "map": [
                 {
+                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Clockin\\Attendance_system\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "176,832",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "483,998"
+                    },
+                    "to": {
+                        "startLines": "152,156",
+                        "startColumns": "4,4",
+                        "startOffsets": "10982,11163",
+                        "endLines": "155,158",
+                        "endColumns": "12,12",
+                        "endOffsets": "11158,11327"
+                    }
+                },
+                {
                     "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\4d0fba10157435766c26a4528ce8905f\\transformed\\lifecycle-viewmodel-2.6.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -1759,7 +1778,7 @@
                     }
                 },
                 {
-                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Ganglia Attendence\\ganglia\\Attendance_system\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
+                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Clockin\\Attendance_system\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8",
                         "startColumns": "4,4,4,4,4,4,4",
@@ -1773,25 +1792,6 @@
                         "startOffsets": "9947,10305,10386,10490,10598,10718,10826",
                         "endColumns": "142,80,103,107,119,107,84",
                         "endOffsets": "10085,10381,10485,10593,10713,10821,10906"
-                    }
-                },
-                {
-                    "source": "C:\\GANGLIA TECHNOLOGIES.PVT\\Ganglia Attendence\\ganglia\\Attendance_system\\android\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "176,832",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "483,998"
-                    },
-                    "to": {
-                        "startLines": "152,156",
-                        "startColumns": "4,4",
-                        "startOffsets": "10982,11163",
-                        "endLines": "155,158",
-                        "endColumns": "12,12",
-                        "endOffsets": "11158,11327"
                     }
                 },
                 {

@@ -1,3 +1,5 @@
+import 'package:attendanaceapp/end_screen.dart';
+import 'package:attendanaceapp/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,12 +9,14 @@ class EmployeeHomePage extends StatefulWidget {
   final String email;
   final String phone;
   final String imageUrl;
+  final String documentId;
 
   EmployeeHomePage({
     required this.name,
     required this.email,
     required this.phone,
     required this.imageUrl,
+    required this.documentId,
   });
 
   @override
@@ -40,7 +44,8 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
 
   String _formatTimeOfDay(TimeOfDay timeOfDay) {
     final now = DateTime.now();
-    final dateTime = DateTime(now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+    final dateTime = DateTime(
+        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
     return DateFormat.Hm().format(dateTime);
   }
 
@@ -49,7 +54,6 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-         
           title: Text('Check-in'),
           content: Container(
             width: 300,
@@ -61,7 +65,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                   controller: checkInTimeController,
                   decoration: InputDecoration(labelText: 'Check-in Time'),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15),
                 ElevatedButton(
                   onPressed: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
@@ -72,11 +76,14 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                     if (pickedTime != null) {
                       setState(() {
                         selectedCheckInTime = pickedTime;
-                        checkInTimeController.text = _formatTimeOfDay(selectedCheckInTime);
+                        checkInTimeController.text =
+                            _formatTimeOfDay(selectedCheckInTime);
                       });
                     }
                   },
                   child: Text('Pick Time'),
+                  style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 247, 153, 14)),
                 ),
               ],
             ),
@@ -108,61 +115,72 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Check-out'),
-          content: Container(
-            width: 300,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  readOnly: true,
-                  controller: checkOutTimeController,
-                  decoration: InputDecoration(labelText: 'Check-out Time'),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: selectedCheckOutTime,
-                    );
+        return SingleChildScrollView(
+          child: AlertDialog(
+            title: Text('Check-out'),
+            content: Container(
+              width: 300,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    readOnly: true,
+                    controller: checkOutTimeController,
+                    decoration: InputDecoration(labelText: 'Check-out Time'),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: selectedCheckOutTime,
+                      );
 
-                    if (pickedTime != null) {
-                      setState(() {
-                        selectedCheckOutTime = pickedTime;
-                        checkOutTimeController.text = _formatTimeOfDay(selectedCheckOutTime);
-                      });
-                    }
-                  },
-                  child: Text('Pick Time'),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: notesController,
-                  decoration: InputDecoration(labelText: 'Notes'),
-                ),
-              ],
+                      if (pickedTime != null) {
+                        setState(() {
+                          selectedCheckOutTime = pickedTime;
+                          checkOutTimeController.text =
+                              _formatTimeOfDay(selectedCheckOutTime);
+                        });
+                      }
+                    },
+                    child: Text('Pick Time'),
+                    style: ElevatedButton.styleFrom(
+                        primary: Color.fromARGB(255, 247, 153, 14)),
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: notesController,
+                    decoration: InputDecoration(labelText: 'Notes'),
+                    maxLines: null,
+                  ),
+                ],
+              ),
             ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Save the check-out time and notes to Firebase Firestore
+                  _saveCheckOutTime();
+
+                  // Close the dialog
+                  Navigator.of(context).pop();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EndScreen()),
+                  );
+                },
+                child: Text('Check-out'),
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Save the check-out time and notes to Firebase Firestore
-                _saveCheckOutTime();
-
-                // Close the dialog
-                Navigator.of(context).pop();
-              },
-              child: Text('Check-out'),
-            ),
-          ],
         );
       },
     );
@@ -171,19 +189,22 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   void _saveCheckInTime() {
     // Get the current date
     DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    String formattedDate = DateFormat('yyyy-MMM-dd').format(currentDate);
 
     // Construct the document ID for emp_daily_activity
     String documentId = "${widget.name}_${widget.phone}_$formattedDate";
 
     // Save the check-in time to 'emp_daily_activity'
-    FirebaseFirestore.instance.collection('emp_daily_activity').doc(documentId).set({
+    FirebaseFirestore.instance
+        .collection('emp_daily_activity')
+        .doc(documentId)
+        .set({
       'name': widget.name,
       'phone': widget.phone,
       'date': formattedDate,
       'login': _formatTimeOfDay(selectedCheckInTime),
-      'logout': null,  // Initialize logout as null
-      'notes': "",     // Initialize notes as an empty string
+      'logout': null, // Initialize logout as null
+      'notes': "", // Initialize notes as an empty string
     }, SetOptions(merge: true)).then((value) {
       print('Check-in time saved successfully!');
     }).catchError((error) {
@@ -194,13 +215,16 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   void _saveCheckOutTime() {
     // Get the current date
     DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    String formattedDate = DateFormat('yyyy-MMM-dd').format(currentDate);
 
     // Construct the document ID for emp_daily_activity
     String documentId = "${widget.name}_${widget.phone}_$formattedDate";
 
     // Save the check-out time and notes to 'emp_daily_activity'
-    FirebaseFirestore.instance.collection('emp_daily_activity').doc(documentId).set({
+    FirebaseFirestore.instance
+        .collection('emp_daily_activity')
+        .doc(documentId)
+        .set({
       'logout': _formatTimeOfDay(selectedCheckOutTime),
       'notes': notesController.text,
     }, SetOptions(merge: true)).then((value) {
@@ -213,7 +237,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
+      appBar: AppBar(
         centerTitle: true,
         title: Text(
           'Checkin-Checkout',
@@ -223,35 +247,94 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
           ),
         ),
         elevation: 0,
-      shape: ContinuousRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-               
-              Color.fromARGB(255, 233, 121, 46), Color.fromARGB(255, 247, 153, 14)
-              // Add more colors if you want a gradient effect
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 233, 121, 46),
+                Color.fromARGB(255, 247, 153, 14),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
       ),
-    ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: _showCheckInDialog,
-              child: Text('Check-in'),
+            Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: NetworkImage(widget.imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _showCheckOutDialog,
-              child: Text('Check-out'),
+            SizedBox(height: 20),
+            Text(
+              widget.name,
+              style: TextStyle(
+                fontSize: 29,
+                fontFamily: 'lemon',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 95),
+            Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceAround, // Adjusted alignment
+              children: [
+                ElevatedButton(
+                  onPressed: _showCheckInDialog,
+                  child: Text(
+                    'Check-in',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 59, 58, 58),
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 247, 153, 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0), // Circular border radius
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15), // Increase button size
+                    minimumSize: Size(150, 60),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _showCheckOutDialog,
+                  child: Text(
+                    'Check-out',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 59, 58, 58),
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 247, 153, 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0), // Circular border radius
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15), // Increase button size
+                    minimumSize: Size(150, 60),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

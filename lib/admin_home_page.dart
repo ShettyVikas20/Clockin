@@ -1,16 +1,17 @@
+import 'package:attendanaceapp/AllEmployeesPhotosPage.dart';
+import 'package:attendanaceapp/add_employee.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'EmployeeHistoryPage.dart'; // Import the EmployeeHistoryPage
-
-
 
 class EmployeeData {
   final String name;
   final String loginTime;
   final String logoutTime;
   final String notes;
-  final String phone; // Include phone in EmployeeData
+  final String phone;
+  String photo_url; // Add photoUrl
 
   EmployeeData({
     required this.name,
@@ -18,41 +19,84 @@ class EmployeeData {
     required this.logoutTime,
     required this.notes,
     required this.phone,
+    required this.photo_url, // Initialize photoUrl
   });
 }
 
-class AdminHomePage extends StatelessWidget {
+class AdminHomePage extends StatefulWidget {
+  @override
+  _AdminHomePageState createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
+      appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Admin Home Page',
+          'Home-Page',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 59, 58, 58),
           ),
         ),
         elevation: 0,
-      shape: ContinuousRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-               
-              Color.fromARGB(255, 233, 121, 46), Color.fromARGB(255, 247, 153, 14)
-              // Add more colors if you want a gradient effect
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 39, 179, 235),
+                Color.fromARGB(255, 182, 215, 247),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
       ),
-    ),
       body: EmployeeCardList(),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 9,
+        shape: CircularNotchedRectangle(), // This is what makes it rounded
+        child: Container(
+         
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.home_rounded,
+                color:  Color.fromARGB(255, 5, 62, 136),),
+                onPressed: () {
+                  // Perform actions specific to this page
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.people_alt_rounded,
+                color:  Color.fromARGB(255, 5, 62, 136),),
+                onPressed: () {
+                  // Navigate to the next page
+                  // For demonstration purposes, let's assume the next page is 'NextPage'
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllEmployeesPhotosPage()));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        elevation: 9,
+        onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
+          // Perform action when the floating action button is pressed
+        },
+      ),
     );
   }
 }
@@ -60,12 +104,9 @@ class AdminHomePage extends StatelessWidget {
 class EmployeeCardList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('emp_daily_activity')
-          .where('date', isEqualTo: currentDate)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -78,10 +119,22 @@ class EmployeeCardList extends StatelessWidget {
 
         var employeeDocs = (snapshot.data as QuerySnapshot?)?.docs ?? [];
 
+        var currentDate = DateFormat('yyyy-MMM-dd').format(DateTime.now());
+        var presentDayEmployeeDocs = employeeDocs.where((doc) {
+          var docIdComponents = doc.id.split('_');
+          return docIdComponents.length == 3 &&
+              docIdComponents[2] == currentDate;
+        }).toList();
+
+        if (presentDayEmployeeDocs.isEmpty) {
+          return Center(child: Text('No records found for the present day.'));
+        }
+
         return ListView.builder(
-          itemCount: employeeDocs.length,
+          itemCount: presentDayEmployeeDocs.length,
           itemBuilder: (context, index) {
-            var data = employeeDocs[index].data() as Map<String, dynamic>;
+            var data =
+                presentDayEmployeeDocs[index].data() as Map<String, dynamic>;
 
             var employeeData = EmployeeData(
               name: data['name'] ?? '',
@@ -89,8 +142,8 @@ class EmployeeCardList extends StatelessWidget {
               logoutTime: data['logout'] ?? '',
               notes: data['notes'] ?? '',
               phone: data['phone'] ?? '',
+              photo_url: '', // Initialize to an empty string for now
             );
-
             return EmployeeCard(employeeData: employeeData);
           },
         );
@@ -118,17 +171,75 @@ class EmployeeCard extends StatelessWidget {
           ),
         );
       },
-      child: Card(
-        margin: EdgeInsets.all(8.0),
-        child: ListTile(
-          title: Text(employeeData.name),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Login Time: ${employeeData.loginTime}'),
-              Text('Logout Time: ${employeeData.logoutTime}'),
-              Text('Notes: ${employeeData.notes}'),
-            ],
+      child: SingleChildScrollView(
+        child: Card(
+          margin: EdgeInsets.all(9.0),
+          elevation: 9,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+            title: 
+              Padding(
+              padding: const EdgeInsets.only(left: 10.0), // Add left padding
+              child:Text(
+              employeeData.name,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                // fontFamily: 'lemon',
+                fontSize: 22,
+              ),
+            ),
+              ),
+            subtitle:
+             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0), // Top padding for login time
+                  child:
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                    child:Text(
+                      'Login Time: ${employeeData.loginTime}',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    ),
+                     Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                    child:
+                    Text(
+                      'Logout Time: ${employeeData.logoutTime}',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    ),
+                  ],
+                ),
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: Text(
+                    'Notes: ${employeeData.notes}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
