@@ -44,8 +44,8 @@ class AllEmployeesPhotosPage extends StatelessWidget {
             ),
           );
         },
-        child: Icon(Icons.add, color: Color.fromARGB(255, 59, 58, 58),),
-        backgroundColor:Color.fromARGB(255, 39, 179, 235),
+        child: Icon(Icons.add, color: Color.fromARGB(255, 255, 255, 255),),
+        backgroundColor:Colors.blue,
       ),
     );
   }
