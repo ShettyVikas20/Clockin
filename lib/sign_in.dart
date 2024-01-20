@@ -20,8 +20,6 @@ class _SignInState extends State<SignIn> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
  
- 
- 
  void authenticateLogin() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -107,7 +105,6 @@ void showSnackbarError(String message) {
     ),
   );
 }
-// ignore: must_be_immutable
 
   @override
   Widget build(BuildContext context) {

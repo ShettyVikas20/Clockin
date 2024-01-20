@@ -368,6 +368,7 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(
               builder: (context) => EmployeeHomePage(
+                 id: user['id'] as String,
                 name: user['name'] as String,
                 email: user['email'] as String,
                 phone: user['phone'] as String,

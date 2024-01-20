@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:uuid/uuid.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   String? _phoneValidationError;
   String? _nameValidationError;
   String? _emailValidationError;
+  final Uuid _uuid = Uuid();
  
 
 void showSnackbar(String message) {
@@ -145,29 +147,35 @@ String? _validateEmail(String value) {
     });
   }
 
+
   Future<void> _saveToFirestore() async {
     try {
-     String? nameError = _validateName(_nameController.text);
-    if (nameError != null) {
-      showSnackbar(nameError);
-    }
-      // Validate phone number
-     
-      // ignore: unused_local_variable
+      // Validate inputs
+      List<String> validationErrors = [];
+
+      String? nameError = _validateName(_nameController.text);
+      if (nameError != null) {
+        validationErrors.add(nameError);
+      }
+
       String? phoneError = _validatePhoneNumber(_phoneController.text);
       if (phoneError != null) {
-        showSnackbar(phoneError);
+        validationErrors.add(phoneError);
       }
 
-      // Validate email
       String? emailError = _validateEmail(_emailController.text);
       if (emailError != null) {
-        showSnackbarError(emailError);
+        validationErrors.add(emailError);
       }
 
-      // Check if an image is selected
       if (_image == null) {
-       showSnackbarError('Please select an image');
+        validationErrors.add('Please select an image');
+      }
+
+      if (validationErrors.isNotEmpty) {
+        // Display all validation errors
+        validationErrors.forEach((error) => showSnackbarError(error));
+        return;
       }
 
       // Set _isUploading to true to show the progress indicator
@@ -176,26 +184,32 @@ String? _validateEmail(String value) {
       });
 
       // Upload the image to Firebase Storage
-      final String imageName =
-          DateTime.now().millisecondsSinceEpoch.toString();
-      final Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('employeesPhotos/$imageName.jpg');
+      final String imageName = '${_uuid.v4()}.jpg';
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child('employeesPhotos/$imageName');
       final UploadTask uploadTask = storageReference.putFile(_image!);
 
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
       final String downloadURL = await taskSnapshot.ref.getDownloadURL();
 
-      // Create a map with employee details
+      // Generate a unique short ID for the employee
+      String shortId = _generateShortId();
+
+      // Create a map with employee details including the generated short ID
       Map<String, dynamic> employeeData = {
+        'id': shortId,
         'name': _nameController.text,
         'email': _emailController.text,
         'phone': _phoneController.text,
         'photo_url': downloadURL,
+        // other employee details
       };
 
       // Add the map as a document to the Firestore collection
-      await FirebaseFirestore.instance.collection('Employees').add(employeeData);
+      await FirebaseFirestore.instance
+          .collection('Employees')
+          .doc(shortId)
+          .set(employeeData);
 
       // Clear the text fields and image after saving to Firestore
       _nameController.clear();
@@ -209,30 +223,32 @@ String? _validateEmail(String value) {
       // Show success message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Container( 
-              alignment: Alignment.center,
-            child:Text('Employee Details Saved Succesfully',
-             style: TextStyle( color: Colors.white, fontSize: 16,fontWeight: FontWeight.bold,
-             ),  
+          content: Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Employee Details Saved Successfully',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
+            ),
           ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(50),
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
-       backgroundColor:   Colors.green,
-      behavior: SnackBarBehavior.floating,
-      // width: 150,
-      margin: EdgeInsets.all(50),
-      elevation: 10,
-    
-       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30), // Adjust the radius as needed
-      ),
           duration: Duration(seconds: 3),
         ),
       );
     } catch (e) {
-      // showSnackbar('Error saving to Firestore: $e');
       // Show an error message to the user
-     
+      showSnackbarError('Error saving to Firestore: $e');
+
       // Set _isUploading to false in case of an error
       setState(() {
         _isUploading = false;
@@ -240,6 +256,14 @@ String? _validateEmail(String value) {
     }
   }
 
+  String _generateShortId() {
+    // Generate 'gtl' + last 2 digits of the current year + any random short alphanumeric characters
+    String currentYear = DateTime.now().year.toString().substring(2);
+    String randomChars = _uuid.v4().replaceAll('-', '').substring(0, 4);
+    return 'gtl$currentYear$randomChars';
+  }
+
+  
   Future<void> _selectPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);

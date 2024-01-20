@@ -2,16 +2,20 @@ import 'package:attendanaceapp/end_screen.dart';
 import 'package:attendanaceapp/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EmployeeHomePage extends StatefulWidget {
   final String name;
+  final String id;
   final String email;
   final String phone;
   final String imageUrl;
   final String documentId;
 
   EmployeeHomePage({
+    required this.id,
     required this.name,
     required this.email,
     required this.phone,
@@ -29,6 +33,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   late TimeOfDay selectedCheckOutTime;
   late TextEditingController checkOutTimeController;
   late TextEditingController notesController;
+  String? selectedProject;
 
   @override
   void initState() {
@@ -42,6 +47,26 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     notesController = TextEditingController();
   }
 
+  Future<Position?> _getCurrentLocation() async {
+  LocationPermission permission = await _checkLocationPermission(context);
+  if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+    print('Location permission not granted.');
+    return null;
+  }
+
+  try {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    return position;
+  } catch (e) {
+    print('Error getting current location: $e');
+    return null;
+  }
+}
+
+
+
   String _formatTimeOfDay(TimeOfDay timeOfDay) {
     final now = DateTime.now();
     final dateTime = DateTime(
@@ -50,6 +75,10 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
   }
 
   Future<void> _showCheckInDialog() async {
+    // Use the current time by default
+    TimeOfDay selectedTime = TimeOfDay.now();
+    
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -60,30 +89,67 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                TextFormField(
-                  readOnly: true,
-                  controller: checkInTimeController,
-                  decoration: InputDecoration(labelText: 'Check-in Time'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: checkInTimeController,
+                        decoration: InputDecoration(labelText: 'Check-in Time'),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime,
+                        );
+
+                        if (pickedTime != null) {
+                          setState(() {
+                            selectedTime = pickedTime;
+                            checkInTimeController.text =
+                                _formatTimeOfDay(selectedTime);
+                          });
+                        }
+                      },
+                      child: Text('Pick Time'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Color.fromARGB(255, 247, 153, 14),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15),
+                DropdownButton<String>(
+                  value: selectedProject,
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedProject = value!;
+                    });
+                  },
+                  items: <String>['Project A', 'Project B', 'Project C']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  hint: Text('Select Project'),
                 ),
                 SizedBox(height: 15),
                 ElevatedButton(
                   onPressed: () async {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: selectedCheckInTime,
-                    );
+                    // Save the check-in time and selected project to 'emp_daily_activity'
+                    _saveCheckInTime();
 
-                    if (pickedTime != null) {
-                      setState(() {
-                        selectedCheckInTime = pickedTime;
-                        checkInTimeController.text =
-                            _formatTimeOfDay(selectedCheckInTime);
-                      });
-                    }
+                    // Close the dialog
+                    Navigator.of(context).pop();
                   },
-                  child: Text('Pick Time'),
+                  child: Text('Check-in'),
                   style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 247, 153, 14)),
+                    primary: Color.fromARGB(255, 247, 153, 14),
+                  ),
                 ),
               ],
             ),
@@ -94,16 +160,6 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                 Navigator.of(context).pop();
               },
               child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Save the check-in time to Firebase Firestore
-                _saveCheckInTime();
-
-                // Close the dialog
-                Navigator.of(context).pop();
-              },
-              child: Text('Check-in'),
             ),
           ],
         );
@@ -146,7 +202,25 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
                     },
                     child: Text('Pick Time'),
                     style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 247, 153, 14)),
+                      primary: Color.fromARGB(255, 247, 153, 14),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  DropdownButton<String>(
+                    value: selectedProject, // Should be null initially
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedProject = value!;
+                      });
+                    },
+                    items: <String>['Project A', 'Project B', 'Project C']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    hint: Text('Select Project'),
                   ),
                   SizedBox(height: 10),
                   TextFormField(
@@ -166,7 +240,7 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
               ),
               TextButton(
                 onPressed: () {
-                  // Save the check-out time and notes to Firebase Firestore
+                  // Save the check-out time, selected project, and notes to 'emp_daily_activity'
                   _saveCheckOutTime();
 
                   // Close the dialog
@@ -186,31 +260,69 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     );
   }
 
-  void _saveCheckInTime() {
-    // Get the current date
-    DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MMM-dd').format(currentDate);
+  Future<void> _saveCheckInTime() async {
+  // Check location permission
+  LocationPermission permission = await _checkLocationPermission(context);
 
-    // Construct the document ID for emp_daily_activity
-    String documentId = "${widget.name}_${widget.phone}_$formattedDate";
-
-    // Save the check-in time to 'emp_daily_activity'
-    FirebaseFirestore.instance
-        .collection('emp_daily_activity')
-        .doc(documentId)
-        .set({
-      'name': widget.name,
-      'phone': widget.phone,
-      'date': formattedDate,
-      'login': _formatTimeOfDay(selectedCheckInTime),
-      'logout': null, // Initialize logout as null
-      'notes': "", // Initialize notes as an empty string
-    }, SetOptions(merge: true)).then((value) {
-      print('Check-in time saved successfully!');
-    }).catchError((error) {
-      print('Error saving check-in time: $error');
-    });
+  if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+    print('Location permission not granted.');
+    return;
   }
+
+  // Get the current location
+  Position? currentPosition = await _getCurrentLocation();
+  if (currentPosition == null) {
+    print('Failed to get current location.');
+    return;
+  }
+  // Get the current date
+  DateTime currentDate = DateTime.now();
+  String formattedDate = DateFormat('yyyy-MMM-dd').format(currentDate);
+
+  // Construct the document ID for emp_daily_activity
+  String documentId = "${widget.id}_${selectedProject}_$formattedDate";
+
+  // Save the check-in time, selected project, location, and other details to 'emp_daily_activity'
+  FirebaseFirestore.instance
+      .collection('emp_daily_activity')
+      .doc(documentId)
+      .set({
+        'id': widget.id,
+        'project': selectedProject,
+        'date': formattedDate,
+        'login': _formatTimeOfDay(selectedCheckInTime),
+        'logout': null,
+        'name': widget.name,
+        'notes': "",
+        'location': 'Latitude: ${currentPosition.latitude}, Longitude: ${currentPosition.longitude}',
+      }, SetOptions(merge: true))
+      .then((value) {
+        print('Check-in time, project, and location saved successfully!');
+      })
+      .catchError((error) {
+        print('Error saving check-in time, project, and location: $error');
+      });
+}
+
+
+// Check location permission
+Future<LocationPermission> _checkLocationPermission(BuildContext context) async {
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    
+    if (permission == LocationPermission.denied) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Location permission is required for this feature."),
+      ));
+    }
+  }
+
+  return permission;
+}
+
+
 
   void _saveCheckOutTime() {
     // Get the current date
@@ -218,19 +330,25 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     String formattedDate = DateFormat('yyyy-MMM-dd').format(currentDate);
 
     // Construct the document ID for emp_daily_activity
-    String documentId = "${widget.name}_${widget.phone}_$formattedDate";
+    String documentId = "${widget.id}_${selectedProject}_$formattedDate";
 
-    // Save the check-out time and notes to 'emp_daily_activity'
+    // Save the check-out time, selected project, and notes to 'emp_daily_activity'
     FirebaseFirestore.instance
         .collection('emp_daily_activity')
         .doc(documentId)
         .set({
+      'id': widget.id,
+      'name': widget.name,
+      'phone': widget.phone,
+      'date': formattedDate,
+      'login': _formatTimeOfDay(selectedCheckInTime),
       'logout': _formatTimeOfDay(selectedCheckOutTime),
+      'project': selectedProject,
       'notes': notesController.text,
     }, SetOptions(merge: true)).then((value) {
-      print('Check-out time and notes saved successfully!');
+      print('Check-out time, project, and notes saved successfully!');
     }).catchError((error) {
-      print('Error saving check-out time and notes: $error');
+      print('Error saving check-out time, project, and notes: $error');
     });
   }
 

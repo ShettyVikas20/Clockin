@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.attendanaceapp-mergeDebugResources-6:/values-si/values-si.xml",
+            "outputFile": "com.example.attendanaceapp-mergeDebugResources-26:/values-si/values-si.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\bb423b9b76250f9455c18b23e81be025\\transformed\\jetified-play-services-basement-18.2.0\\res\\values-si\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "195",
-                        "endColumns": "134",
-                        "endOffsets": "329"
-                    },
-                    "to": {
-                        "startLines": "17",
-                        "startColumns": "4",
-                        "startOffsets": "1766",
-                        "endColumns": "138",
-                        "endOffsets": "1900"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\b4e60b8108bacb2e8d207f4f27b66025\\transformed\\browser-1.4.0\\res\\values-si\\values-si.xml",
+                    "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\b4e60b8108bacb2e8d207f4f27b66025\\transformed\\browser-1.4.0\\res\\values-si\\values-si.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -38,7 +21,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\1659c9dc29fb7465b6bfc2816f924362\\transformed\\core-1.10.1\\res\\values-si\\values-si.xml",
+                    "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\bb423b9b76250f9455c18b23e81be025\\transformed\\jetified-play-services-basement-18.2.0\\res\\values-si\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "134",
+                        "endOffsets": "329"
+                    },
+                    "to": {
+                        "startLines": "17",
+                        "startColumns": "4",
+                        "startOffsets": "1766",
+                        "endColumns": "138",
+                        "endOffsets": "1900"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\1659c9dc29fb7465b6bfc2816f924362\\transformed\\core-1.10.1\\res\\values-si\\values-si.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -55,7 +55,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\675374a81f79f0172317d524d18c8d85\\transformed\\jetified-play-services-base-18.0.1\\res\\values-si\\values.xml",
+                    "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\6d91d5d81f6fde650d458542aea6bd45\\transformed\\jetified-play-services-base-18.1.0\\res\\values-si\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
