@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.attendanaceapp-mergeDebugResources-26:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.example.attendanaceapp-mergeDebugResources-27:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\09acd1e6df69b544bb24ff3e69311d5d\\transformed\\jetified-play-services-auth-20.7.0\\res\\values-watch-v20\\values.xml",
