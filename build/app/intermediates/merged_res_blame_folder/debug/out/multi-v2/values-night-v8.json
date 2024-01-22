@@ -4,7 +4,7 @@
             "outputFile": "com.example.attendanaceapp-mergeDebugResources-27:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "D:\\Gangliaaaa\\Clockin\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\Nikhil\\Desktop\\Clokout\\Clockin\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

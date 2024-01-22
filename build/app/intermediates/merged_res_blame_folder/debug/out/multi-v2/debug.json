@@ -1755,23 +1755,6 @@
                     }
                 },
                 {
-                    "source": "D:\\Gangliaaaa\\Clockin\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "55,198,279,383,491,611,719",
-                        "endColumns": "142,80,103,107,119,107,84",
-                        "endOffsets": "193,274,378,486,606,714,799"
-                    },
-                    "to": {
-                        "startLines": "141,145,146,147,148,149,150",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "9947,10305,10386,10490,10598,10718,10826",
-                        "endColumns": "142,80,103,107,119,107,84",
-                        "endOffsets": "10085,10381,10485,10593,10713,10821,10906"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Nikhil\\.gradle\\caches\\transforms-3\\eee1288b854bba7573b679e4124c0c3c\\transformed\\lifecycle-runtime-2.6.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -1789,7 +1772,24 @@
                     }
                 },
                 {
-                    "source": "D:\\Gangliaaaa\\Clockin\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "C:\\Users\\Nikhil\\Desktop\\Clokout\\Clockin\\build\\app\\generated\\res\\google-services\\debug\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,198,279,383,491,611,719",
+                        "endColumns": "142,80,103,107,119,107,84",
+                        "endOffsets": "193,274,378,486,606,714,799"
+                    },
+                    "to": {
+                        "startLines": "141,145,146,147,148,149,150",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "9947,10305,10386,10490,10598,10718,10826",
+                        "endColumns": "142,80,103,107,119,107,84",
+                        "endOffsets": "10085,10381,10485,10593,10713,10821,10906"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Nikhil\\Desktop\\Clokout\\Clockin\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -5510,7 +5510,7 @@
             "outputFile": "com.example.attendanaceapp-merged_res-29:/values-night-v8_values-night-v8.arsc.flat",
             "map": [
                 {
-                    "source": "D:\\Gangliaaaa\\Clockin\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "C:\\Users\\Nikhil\\Desktop\\Clokout\\Clockin\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
