@@ -246,19 +246,13 @@
 //     );
 //   }
 // }
-
-
-
-
-
-
-
 import 'package:attendanaceapp/AllEmployeesPhotosPage.dart';
 import 'package:attendanaceapp/add_employee.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+// ignore: unused_import
 import 'EmployeeHistoryPage.dart'; // Import the EmployeeHistoryPage
 
 class EmployeeData {
