@@ -1,12 +1,18 @@
+// 
+
+
+
+
+
+
+
+
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
 import 'package:attendanaceapp/components/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
-// ignore: unused_import
-import 'emp_details.dart'; // Import the EmployeeHistoryPage
 
 class EmployeeData {
   final String name;
@@ -39,25 +45,24 @@ class _AdminHomePageState extends State<AdminHomePage> {
       body: EmployeeCardList(),
       bottomNavigationBar: BottomAppBar(
         elevation: 9,
-        shape: CircularNotchedRectangle(), // This is what makes it rounded
-        child: Container(         
+        shape: CircularNotchedRectangle(),
+        child: Container(
           height: 60.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
                 icon: Icon(Icons.home_rounded,
-                color:  Color.fromARGB(255, 5, 62, 136),),
+                  color: Color.fromARGB(255, 5, 62, 136),),
                 onPressed: () {
                   // Perform actions specific to this page
                 },
               ),
               IconButton(
                 icon: Icon(Icons.people_alt_rounded,
-                color:  Color.fromARGB(255, 5, 62, 136),),
+                  color: Color.fromARGB(255, 5, 62, 136),),
                 onPressed: () {
                   // Navigate to the next page
-                  // For demonstration purposes, let's assume the next page is 'NextPage'
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AllEmployeesPhotosPage()));
                 },
               ),
@@ -70,7 +75,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         child: Icon(Icons.add),
         elevation: 9,
         onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
           // Perform action when the floating action button is pressed
         },
       ),
@@ -94,84 +99,66 @@ class EmployeeCardList extends StatelessWidget {
 
         var employeeDocs = (snapshot.data as QuerySnapshot?)?.docs ?? [];
 
-        var currentDate = DateFormat('yyyy-MMM-dd').format(DateTime.now());
-        var presentDayEmployeeDocs = employeeDocs.where((doc) {
-          var data = doc.data() as Map<String, dynamic>;
+        // Group projects by employee
+        var groupedProjects = <String, List<Map<String, dynamic>>>{};
 
-          // Check if the "daily_activity" field exists
+        for (var doc in employeeDocs) {
+          var data = doc.data() as Map<String, dynamic>;
+          var employeeName = doc.id.split('_')[0];
+
           if (data.containsKey('daily_activity')) {
-            var dailyActivities = data['daily_activity'] as List<dynamic>?;
-            
-            // Check if there are daily activities and at least one project
-            if (dailyActivities != null && dailyActivities.isNotEmpty) {
-              return dailyActivities.any((activity) {
-                var date = activity['date'] as String;
-                return date == currentDate;
-              });
+            var dailyActivityList = data['daily_activity'] as List<dynamic>?;
+
+            if (dailyActivityList != null && dailyActivityList.isNotEmpty) {
+              var projects = dailyActivityList[0]['projects'] as List<dynamic>;
+
+              if (!groupedProjects.containsKey(employeeName)) {
+                groupedProjects[employeeName] = [];
+              }
+
+              groupedProjects[employeeName]!.addAll(projects.cast<Map<String, dynamic>>());
             }
           }
-          return false;
-        }).toList();
+        }
 
-        if (presentDayEmployeeDocs.isEmpty) {
+        if (groupedProjects.isEmpty) {
           return Center(child: Text('No records found for the present day.'));
         }
 
-        return ListView.builder(
-          itemCount: presentDayEmployeeDocs.length,
-          itemBuilder: (context, index) {
-            var data = presentDayEmployeeDocs[index].data() as Map<String, dynamic>;
+        return ListView(
+          children: groupedProjects.entries.map((entry) {
+            var employeeName = entry.key;
+            var projects = entry.value;
 
-            // Extracting employee name from the document ID
-            var docIdComponents = presentDayEmployeeDocs[index].id.split('_');
-            var employeeName = docIdComponents[0];
-
-            // Extracting and processing daily activities for the current day
-            var dailyActivities = data['daily_activity'] as List<dynamic>?;
-
-            if (dailyActivities != null && dailyActivities.isNotEmpty) {
-              var todayProjects = dailyActivities[0]['projects'] as List<dynamic>;
-
-              var employeeDataList = todayProjects.map((project) {
-                return EmployeeData(
-                  name: employeeName,
-                  loginTime: project['login'] ?? '',
-                  logoutTime: project['logout'] ?? '',
-                  notes: project['notes'] ?? '',
-                  checkInLocation: _parseLocation(project['checkin_location']),
-                  checkOutLocation: _parseLocation(project['checkout_location']),
-                );
-              }).toList();
-
-              // Assuming each project corresponds to an employee entry
-              return Column(
-                children: employeeDataList.map((employeeData) {
-                  return EmployeeCard(employeeData: employeeData);
-                }).toList(),
-              );
-            } else {
-              return Center(child: Text('No records found for the present day.'));
-            }
-          },
+            return EmployeeCard(employeeName: employeeName, projects: projects);
+          }).toList(),
         );
       },
     );
   }
-
-  LatLng _parseLocation(String locationString) {
-    var coordinates = locationString
-        .replaceAll('Latitude: ', '')
-        .replaceAll('Longitude: ', '')
-        .split(', ');
-    return LatLng(double.parse(coordinates[0]), double.parse(coordinates[1]));
-  }
 }
 
+class EmployeeCard extends StatefulWidget {
+  final String employeeName;
+  final List<Map<String, dynamic>> projects;
 
-class EmployeeCard extends StatelessWidget {
-  final EmployeeData employeeData;
+  EmployeeCard({
+    required this.employeeName,
+    required this.projects,
+  });
 
-  EmployeeCard({required this.employeeData});
+  @override
+  _EmployeeCardState createState() => _EmployeeCardState();
+}
+
+class _EmployeeCardState extends State<EmployeeCard> {
+  late Map<String, dynamic> selectedProject;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedProject = widget.projects.first;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,88 +168,118 @@ class EmployeeCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 15.0),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text(
-            employeeData.name,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-            fontWeight: FontWeight.bold,
-              fontSize: 22,
+      child: Column(
+        children: [
+          _buildDropDown(),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text(
+                widget.employeeName,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          'Login Time: ${selectedProject['login'] ?? ''}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Text(
+                          'Logout Time: ${selectedProject['logout'] ?? ''}',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: Text(
+                    'Notes: ${selectedProject['notes'] ?? ''}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+                SizedBox(height: 10),
+                // Display Google Map with Check-in and Check-out locations
+                Container(
+                  height: 200,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: _parseLocation(selectedProject['checkin_location']),
+                      zoom: 15,
+                    ),
+                    markers: Set.from([
+                      Marker(
+                        markerId: MarkerId('checkIn'),
+                        position: _parseLocation(selectedProject['checkin_location']),
+                        infoWindow: InfoWindow(title: 'Check-in Location'),
+                      ),
+                      Marker(
+                        markerId: MarkerId('checkOut'),
+                        position: _parseLocation(selectedProject['checkout_location']),
+                        infoWindow: InfoWindow(title: 'Check-out Location'),
+                      ),
+                    ]),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      'Login Time: ${employeeData.loginTime}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: Text(
-                      'Logout Time: ${employeeData.logoutTime}',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Center(
-              child: Text(
-                'Notes: ${employeeData.notes}',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
-            ),
-            SizedBox(height: 10),
-            // Display Google Map with Check-in and Check-out locations
-            Container(
-              height: 200,
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: employeeData.checkInLocation,
-                  zoom: 15,
-                ),
-                markers: Set.from([
-                Marker(
-                  markerId: MarkerId('checkIn'),
-                  position: employeeData.checkInLocation,
-                  infoWindow: InfoWindow(title: 'Check-in Location'),
-                ),
-                Marker(
-                  markerId: MarkerId('checkOut'),
-                  position: employeeData.checkOutLocation,
-                  infoWindow: InfoWindow(title: 'Check-out Location'),
-                ),
-              ]),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
+  }
+
+  Widget _buildDropDown() {
+    return DropdownButton<Map<String, dynamic>>(
+      value: selectedProject,
+      onChanged: (value) {
+        setState(() {
+          selectedProject = value!;
+        });
+      },
+      items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
+        return DropdownMenuItem<Map<String, dynamic>>(
+          value: project,
+          child: Text(project['project_name'] ?? 'Unknown Project'),
+        );
+      }).toList(),
+    );
+  }
+
+  LatLng _parseLocation(String locationString) {
+    var coordinates = locationString
+        .replaceAll('Latitude: ', '')
+        .replaceAll('Longitude: ', '')
+        .split(', ');
+    return LatLng(double.parse(coordinates[0]), double.parse(coordinates[1]));
   }
 }

@@ -1,10 +1,9 @@
-import 'package:attendanaceapp/components/app_bar.dart';
-import 'package:attendanaceapp/components/snack_bar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:uuid/uuid.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -20,30 +19,93 @@ class _UserProfilePageState extends State<UserProfilePage> {
   String? _phoneValidationError;
   String? _nameValidationError;
   String? _emailValidationError;
+  final Uuid _uuid = Uuid();
  
+
+void showSnackbar(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Container(
+        alignment: Alignment.center,
+        child: Text(
+          message,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      backgroundColor: Colors.green,
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.all(50),
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      duration: Duration(seconds: 3),
+    ),
+  );
+}
+
+void showSnackbarError(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Container(
+        alignment: Alignment.center,
+        child: Text(
+          message,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      backgroundColor:Colors.red,
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.all(50),
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      duration: Duration(seconds: 3),
+    ),
+  );
+}
+ 
+
+
 String? _validateName(String value) {
   if (value.isEmpty) {
     setState(() {
-     
+      // Show Snackbar if the name is empty
+      showSnackbar('Please Enter Name');
+      // Set the error message for the TextField
       _nameValidationError = 'Please Enter Name';
     });
-  } 
-   else {
+    showSnackbar( 'Please Enter Name'); // Return the error message
+  } else {
+    // Clear any previous validation error
     setState(() {
       _nameValidationError = null;
     });
   }
-  return null; 
+  return null; // No error
 }
-
 String? _validatePhoneNumber(String value) {
   if (value.length != 10) {
     setState(() {
+      // Show Snackbar if the name is empty
+     showSnackbarError('Please Enter Correct Phone Number');
+      // Set the error message for the TextField
        _phoneValidationError = 'Please Enter Correct Phone Number';
     });
-  } 
-  else {
-   
+   showSnackbarError( 'Please Enter Correct Phone Number'); // Return the error message
+  } else {
+    // Clear any previous validation error
     setState(() {
        _phoneValidationError = null;
     });
@@ -57,10 +119,12 @@ String? _validateEmail(String value) {
         RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
  if (!emailRegex.hasMatch(value)) {
     setState(() {
+      // Show Snackbar if the name is empty
+     showSnackbarError('Enter a valid email address');
       // Set the error message for the TextField
      _emailValidationError = 'Enter a valid email address';
     });
- 
+   showSnackbarError( 'Enter a valid email address'); // Return the error message
   } else {
     // Clear any previous validation error
     setState(() {
@@ -83,52 +147,71 @@ String? _validateEmail(String value) {
     });
   }
 
+
   Future<void> _saveToFirestore() async {
     try {
-     String? nameError = _validateName(_nameController.text);
-    if (nameError != null) {
-      
-    }
-      // Validate phone number
+      // Validate inputs
+      List<String> validationErrors = [];
+
+      String? nameError = _validateName(_nameController.text);
+      if (nameError != null) {
+        validationErrors.add(nameError);
+      }
+
       String? phoneError = _validatePhoneNumber(_phoneController.text);
       if (phoneError != null) {
-       
+        validationErrors.add(phoneError);
       }
 
-      // Validate email
       String? emailError = _validateEmail(_emailController.text);
       if (emailError != null) {
-        
+        validationErrors.add(emailError);
       }
 
-      // Check if an image is selected
       if (_image == null) {
-      showError(context,'Please select an image');
+        validationErrors.add('Please select an image');
       }
+
+      if (validationErrors.isNotEmpty) {
+        // Display all validation errors
+        validationErrors.forEach((error) => showSnackbarError(error));
+        return;
+      }
+
+      // Set _isUploading to true to show the progress indicator
       setState(() {
         _isUploading = true;
       });
-    // Upload the image to Firebase Storage
-      final String imageName =
-          DateTime.now().millisecondsSinceEpoch.toString();
-      final Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('employeesPhotos/$imageName.jpg');
+
+      // Upload the image to Firebase Storage
+      final String imageName = '${_uuid.v4()}.jpg';
+      final Reference storageReference =
+          FirebaseStorage.instance.ref().child('employeesPhotos/$imageName');
       final UploadTask uploadTask = storageReference.putFile(_image!);
 
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
       final String downloadURL = await taskSnapshot.ref.getDownloadURL();
 
-      // Create a map with employee details
+      // Generate a unique short ID for the employee
+      String shortId = _generateShortId();
+
+      // Create a map with employee details including the generated short ID
       Map<String, dynamic> employeeData = {
+        'id': shortId,
         'name': _nameController.text,
         'email': _emailController.text,
         'phone': _phoneController.text,
         'photo_url': downloadURL,
+        // other employee details
       };
-   // Add the map as a document to the Firestore collection
-      await FirebaseFirestore.instance.collection('Employees').add(employeeData);
-   // Clear the text fields and image after saving to Firestore
+
+      // Add the map as a document to the Firestore collection
+      await FirebaseFirestore.instance
+          .collection('Employees')
+          .doc(shortId)
+          .set(employeeData);
+
+      // Clear the text fields and image after saving to Firestore
       _nameController.clear();
       _emailController.clear();
       _phoneController.clear();
@@ -136,13 +219,51 @@ String? _validateEmail(String value) {
         _image = null;
         _isUploading = false;
       });
-       showSuccess(context,'Employee Details Saved Succesfully');
+
+      // Show success message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Employee Details Saved Successfully',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(50),
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
     } catch (e) {
+      // Show an error message to the user
+      showSnackbarError('Error saving to Firestore: $e');
+
+      // Set _isUploading to false in case of an error
       setState(() {
         _isUploading = false;
       });
     }
   }
+
+  String _generateShortId() {
+    // Generate 'gtl' + last 2 digits of the current year + any random short alphanumeric characters
+    String currentYear = DateTime.now().year.toString().substring(2);
+    String randomChars = _uuid.v4().replaceAll('-', '').substring(0, 4);
+    return 'gtl$currentYear$randomChars';
+  }
+
+  
   Future<void> _selectPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -153,10 +274,37 @@ String? _validateEmail(String value) {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppbarAdmin('Add Employee'),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Add Employees',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 59, 58, 58),
+          ),
+        ),
+        elevation: 0,
+      shape: ContinuousRectangleBorder(
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+               
+               Color.fromARGB(255, 39, 179, 235), Color.fromARGB(255, 182, 215, 247),
+              // Add more colors if you want a gradient effect
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      ),
+    ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(19.0),
@@ -194,7 +342,7 @@ String? _validateEmail(String value) {
                             : null,
                       ),
                       if (_isUploading)
-                        const CircularProgressIndicator(
+                        CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Color.fromARGB(255, 142, 162, 253),
                           ),
@@ -211,7 +359,7 @@ String? _validateEmail(String value) {
                   errorText: _nameValidationError, 
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: Colors.blue,
                       width: 2.0,
                     ),
@@ -226,7 +374,7 @@ String? _validateEmail(String value) {
                   errorText: _phoneValidationError,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: Colors.blue,
                       width: 2.0,
                     ),
@@ -241,7 +389,7 @@ String? _validateEmail(String value) {
                   errorText: _emailValidationError,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: Colors.blue,
                       width: 2.0,
                     ),
