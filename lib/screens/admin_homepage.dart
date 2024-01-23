@@ -1,11 +1,4 @@
-// 
-
-
-
-
-
-
-
+//
 
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
@@ -52,18 +45,25 @@ class _AdminHomePageState extends State<AdminHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                icon: Icon(Icons.home_rounded,
-                  color: Color.fromARGB(255, 5, 62, 136),),
+                icon: Icon(
+                  Icons.home_rounded,
+                  color: Color.fromARGB(255, 5, 62, 136),
+                ),
                 onPressed: () {
                   // Perform actions specific to this page
                 },
               ),
               IconButton(
-                icon: Icon(Icons.people_alt_rounded,
-                  color: Color.fromARGB(255, 5, 62, 136),),
+                icon: Icon(
+                  Icons.people_alt_rounded,
+                  color: Color.fromARGB(255, 5, 62, 136),
+                ),
                 onPressed: () {
                   // Navigate to the next page
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllEmployeesPhotosPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllEmployeesPhotosPage()));
                 },
               ),
             ],
@@ -75,7 +75,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
         child: Icon(Icons.add),
         elevation: 9,
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => UserProfilePage()));
           // Perform action when the floating action button is pressed
         },
       ),
@@ -87,7 +88,9 @@ class EmployeeCardList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('emp_daily_activity').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('emp_daily_activity')
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -116,7 +119,8 @@ class EmployeeCardList extends StatelessWidget {
                 groupedProjects[employeeName] = [];
               }
 
-              groupedProjects[employeeName]!.addAll(projects.cast<Map<String, dynamic>>());
+              groupedProjects[employeeName]!
+                  .addAll(projects.cast<Map<String, dynamic>>());
             }
           }
         }
@@ -233,18 +237,21 @@ class _EmployeeCardState extends State<EmployeeCard> {
                   height: 200,
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: _parseLocation(selectedProject['checkin_location']),
+                      target:
+                          _parseLocation(selectedProject['checkin_location']),
                       zoom: 15,
                     ),
                     markers: Set.from([
                       Marker(
                         markerId: MarkerId('checkIn'),
-                        position: _parseLocation(selectedProject['checkin_location']),
+                        position:
+                            _parseLocation(selectedProject['checkin_location']),
                         infoWindow: InfoWindow(title: 'Check-in Location'),
                       ),
                       Marker(
                         markerId: MarkerId('checkOut'),
-                        position: _parseLocation(selectedProject['checkout_location']),
+                        position: _parseLocation(
+                            selectedProject['checkout_location']),
                         infoWindow: InfoWindow(title: 'Check-out Location'),
                       ),
                     ]),
@@ -266,7 +273,8 @@ class _EmployeeCardState extends State<EmployeeCard> {
           selectedProject = value!;
         });
       },
-      items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
+      items: widget.projects
+          .map<DropdownMenuItem<Map<String, dynamic>>>((project) {
         return DropdownMenuItem<Map<String, dynamic>>(
           value: project,
           child: Text(project['project_name'] ?? 'Unknown Project'),
@@ -283,3 +291,5 @@ class _EmployeeCardState extends State<EmployeeCard> {
     return LatLng(double.parse(coordinates[0]), double.parse(coordinates[1]));
   }
 }
+
+//nothing
