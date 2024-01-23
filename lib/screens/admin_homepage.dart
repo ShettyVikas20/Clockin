@@ -265,7 +265,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
     );
   }
 
-  Widget _buildDropDown() {
+    Widget _buildDropDown() {
     return DropdownButton<Map<String, dynamic>>(
       value: selectedProject,
       onChanged: (value) {
@@ -273,15 +273,15 @@ class _EmployeeCardState extends State<EmployeeCard> {
           selectedProject = value!;
         });
       },
-      items: widget.projects
-          .map<DropdownMenuItem<Map<String, dynamic>>>((project) {
+      items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
         return DropdownMenuItem<Map<String, dynamic>>(
           value: project,
-          child: Text(project['project_name'] ?? 'Unknown Project'),
+          child: Text(project['name'] ?? 'Unknown Project'), // Use 'name' instead of 'project_name'
         );
       }).toList(),
     );
   }
+
 
   LatLng _parseLocation(String locationString) {
     var coordinates = locationString
