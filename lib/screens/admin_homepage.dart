@@ -3,6 +3,7 @@
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
 import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:attendanaceapp/screens/employee_more_details.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -119,8 +120,14 @@ class EmployeeCardList extends StatelessWidget {
                 groupedProjects[employeeName] = [];
               }
 
-              groupedProjects[employeeName]!
-                  .addAll(projects.cast<Map<String, dynamic>>());
+              // Add only unique projects by checking their names
+              for (var project in projects) {
+                var projectName = project['name'];
+                if (!groupedProjects[employeeName]!
+                    .any((p) => p['name'] == projectName)) {
+                  groupedProjects[employeeName]!.add(project);
+                }
+              }
             }
           }
         }
@@ -134,7 +141,10 @@ class EmployeeCardList extends StatelessWidget {
             var employeeName = entry.key;
             var projects = entry.value;
 
-            return EmployeeCard(employeeName: employeeName, projects: projects);
+            return EmployeeCard(
+              employeeName: employeeName,
+              projects: projects,
+            );
           }).toList(),
         );
       },
@@ -150,7 +160,6 @@ class EmployeeCard extends StatefulWidget {
     required this.employeeName,
     required this.projects,
   });
-
   @override
   _EmployeeCardState createState() => _EmployeeCardState();
 }
@@ -166,25 +175,37 @@ class _EmployeeCardState extends State<EmployeeCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(9.0),
-      elevation: 9,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Column(
-        children: [
-          _buildDropDown(),
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(vertical: 15.0),
-            title: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(
-                widget.employeeName,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
+    return GestureDetector(
+      onTap: () {
+        // Navigate to the details page and pass the necessary data
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EmployeeDetailsPage(employeeName: widget.employeeName,
+              employeeId: widget.projects.first['id'], // Assuming employee ID is stored in the first project
+              presentDayData: widget.projects,),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.all(9.0),
+        elevation: 9,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          children: [
+            _buildDropDown(),
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+              title: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  widget.employeeName,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
                 ),
               ),
             ),
@@ -262,10 +283,11 @@ class _EmployeeCardState extends State<EmployeeCard> {
           ),
         ],
       ),
+      ),
     );
   }
 
-    Widget _buildDropDown() {
+   Widget _buildDropDown() {
     return DropdownButton<Map<String, dynamic>>(
       value: selectedProject,
       onChanged: (value) {
@@ -276,7 +298,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
       items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
         return DropdownMenuItem<Map<String, dynamic>>(
           value: project,
-          child: Text(project['name'] ?? 'Unknown Project'), // Use 'name' instead of 'project_name'
+          child: Text(project['name'] ?? 'Unknown Project'),
         );
       }).toList(),
     );
