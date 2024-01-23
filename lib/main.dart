@@ -1,14 +1,5 @@
-import 'package:attendanaceapp/AllEmployeesPhotosPage.dart';
-import 'package:attendanaceapp/EmployeeHistoryPage.dart';
-import 'package:attendanaceapp/add_employee.dart';
-import 'package:attendanaceapp/admin_home_page.dart';
-
-import 'package:attendanaceapp/emp_login.dart';
-
-import 'package:attendanaceapp/google_sign_in_provider.dart';
-import 'package:attendanaceapp/home_screen.dart';
-import 'package:attendanaceapp/sign_in.dart';
-import 'package:attendanaceapp/splash_screen.dart';
+import 'package:attendanaceapp/screens/google_sign_in_provider.dart';
+import 'package:attendanaceapp/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
