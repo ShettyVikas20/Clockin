@@ -1,3 +1,4 @@
+import 'package:attendanaceapp/screens/dashboard_emp.dart';
 import 'package:attendanaceapp/screens/end_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -599,7 +600,13 @@ Future<void> _saveCheckOutTime() async {
                   itemDashboard('Check-In', CupertinoIcons.arrow_right_circle, Colors.green, _showCheckInDialog),
                   itemDashboard('Check-Out', CupertinoIcons.arrow_left_circle, Colors.orange, _showCheckOutDialog),
                   itemDashboard('About', CupertinoIcons.question_circle, Colors.pinkAccent, () {}),
-                  itemDashboard('DashBoard', CupertinoIcons.book_circle, Colors.blue,(){}),
+                  itemDashboard('DashBoard', CupertinoIcons.book_circle, Colors.blue,(){
+                     Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DashBoard(name: widget.name, imageUrl: widget.imageUrl,)),
+              );
+                  
+                  }),
                 ],
               ),
             ),

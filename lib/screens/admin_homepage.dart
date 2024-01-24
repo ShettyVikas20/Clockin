@@ -183,7 +183,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
           MaterialPageRoute(
             builder: (context) => EmployeeDetailsPage(employeeName: widget.employeeName,
               employeeId: widget.projects.first['id'], // Assuming employee ID is stored in the first project
-              presentDayData: widget.projects,),
+             ),
           ),
         );
       },
