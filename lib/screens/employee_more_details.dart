@@ -146,6 +146,7 @@
 //   }
 // }
 
+import 'package:attendanaceapp/screens/viewmore_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -233,6 +234,13 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
           _buildDateButtons(),
           SizedBox(height: 20),
           _buildDetailsContainer(),
+          SizedBox(height: 20),
+          ElevatedButton(onPressed: () {
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  AnalyticsDashboard(allEmployeeData: allEmployeeData)),
+              );
+          },child: Text('viewmore'),)
         ],
       ),
     );
