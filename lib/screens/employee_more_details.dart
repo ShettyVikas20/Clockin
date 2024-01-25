@@ -139,7 +139,7 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AnalyticsDashboard(allEmployeeData:allEmployeeData,), // Replace with your actual page
+                      builder: (context) => AnalyticsDashboard(allEmployeeData: allEmployeeData,), // Replace with your actual page
                     ),
                   );
                 },
