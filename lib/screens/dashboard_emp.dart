@@ -104,7 +104,7 @@ body: Center(
       ),
       const SizedBox(height: 16),
       Text(
-        'TOTAL ATTENDANCE',
+        'TOTAL ATTENDANCE IN THIS MONTH',
         style: TextStyle(fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 134, 134, 134)),
       ),
       const SizedBox(height: 55),

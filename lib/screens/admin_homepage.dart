@@ -1,4 +1,3 @@
-//
 
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
@@ -287,23 +286,66 @@ class _EmployeeCardState extends State<EmployeeCard> {
     );
   }
 
-   Widget _buildDropDown() {
-    return DropdownButton<Map<String, dynamic>>(
-      value: selectedProject,
-      onChanged: (value) {
-        setState(() {
-          selectedProject = value!;
-        });
-      },
-      items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
-        return DropdownMenuItem<Map<String, dynamic>>(
-          value: project,
-          child: Text(project['name'] ?? 'Unknown Project'),
-        );
-      }).toList(),
+// Widget _buildDropDown() {
+//   return ClipRRect(
+//     borderRadius: BorderRadius.circular(10.0), // Adjust the circular border radius as needed
+//     child: Container(
+//       color: Colors.white, // Set the background color of the dropdown
+//       child: DropdownButton<Map<String, dynamic>>(
+//         value: selectedProject,
+//         onChanged: (value) {
+//           setState(() {
+//             selectedProject = value!;
+//           });
+//         },
+//         items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
+//           return DropdownMenuItem<Map<String, dynamic>>(
+//             value: project,
+//             child: Padding(
+//               padding: const EdgeInsets.all(8.0), // Add padding inside the dropdown items
+//               child: Text(project['name'] ?? 'Unknown Project'),
+//             ),
+//           );
+//         }).toList(),
+//       ),
+//     ),
+//   );
+// }
+
+  Widget _buildDropDown() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: ClipRRect(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(15.0),
+        ),
+        child: Container(
+          color: Colors.white,
+          child: DropdownButton<Map<String, dynamic>>(
+            value: selectedProject,
+            onChanged: (value) {
+              setState(() {
+                selectedProject = value!;
+              });
+            },
+            items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>(
+              (project) {
+                return DropdownMenuItem<Map<String, dynamic>>(
+                  value: project,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(project['name'] ?? 'Unknown Project'),
+                  ),
+                );
+              },
+            ).toList(),
+          ),
+        ),
+      ),
     );
   }
-
 
   LatLng _parseLocation(String locationString) {
     var coordinates = locationString

@@ -1,151 +1,5 @@
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:intl/intl.dart';
-
-// class EmployeeDetailsPage extends StatefulWidget {
-//   final String employeeName;
-//   final String employeeId;
-
-//   EmployeeDetailsPage({
-//     required this.employeeName,
-//     required this.employeeId,
-//   });
-
-//   @override
-//   _EmployeeDetailsPageState createState() => _EmployeeDetailsPageState();
-// }
-
-// class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
-//   late List<Map<String, dynamic>> allEmployeeData;
-//   late String selectedDate;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     selectedDate = DateFormat('yyyy-MMM-dd').format(DateTime.now());
-//     allEmployeeData = []; // Initialize the list here
-
-//     FirebaseFirestore.instance
-//         .collection('emp_daily_activity')
-//         .doc('${widget.employeeName}_${widget.employeeId}_dailyactivity')
-//         .get()
-//         .then((docSnapshot) {
-//       if (docSnapshot.exists) {
-//         var data = docSnapshot.data() as Map<String, dynamic>;
-//         allEmployeeData = data['daily_activity'].cast<Map<String, dynamic>>();
-//         print('Fetched employee data: $allEmployeeData');
-//         setState(() {});
-//       } else {
-//         print('Document does not exist for employee: ${widget.employeeName}_${widget.employeeId}_dailyactivity');
-//       }
-//     }).catchError((error) {
-//       print('Error fetching employee data: $error');
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Employee Details - ${widget.employeeName}'),
-//       ),
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           SizedBox(height: 20),
-//           Text(
-//             'Select a day to view details:',
-//             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//           ),
-//           _buildDateButtons(),
-//           SizedBox(height: 20),
-//           _buildDetailsContainer(),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildDateButtons() {
-//   var recentDates = allEmployeeData
-//       .map<String>((day) => day['date'].toString())
-//       .toSet()
-//       .toList()
-//       ..sort((a, b) {
-//         // Parse the dates before comparison
-//         var dateA = DateFormat('yyyy-MMM-dd').parse(a);
-//         var dateB = DateFormat('yyyy-MMM-dd').parse(b);
-//         return dateB.compareTo(dateA);
-//       });
-
-//   return Container(
-//     height: 40,
-//     child: ListView.builder(
-//       scrollDirection: Axis.horizontal,
-//       itemCount: recentDates.length > 6 ? 6 : recentDates.length,
-//       itemBuilder: (context, index) {
-//         var date = recentDates[index];
-//         return ElevatedButton(
-//           onPressed: () {
-//             print('Button clicked for date: $date');
-//             setState(() {
-//               selectedDate = date;
-//             });
-//           },
-//           child: Text(date),
-//         );
-//       },
-//     ),
-//   );
-// }
-
-//   Widget _buildDetailsContainer() {
-//     var projectsForSelectedDate = allEmployeeData
-//         .where((day) {
-//           return day['date'] == selectedDate;
-//         })
-//         .toList();
-
-//     print('Projects for selected date ($selectedDate): $projectsForSelectedDate');
-
-//     return Expanded(
-//       child: ListView.builder(
-//         itemCount: projectsForSelectedDate.length,
-//         itemBuilder: (context, index) {
-//           var day = projectsForSelectedDate[index];
-//           var projects = day['projects'] as List<dynamic>;
-
-//           return Column(
-//             children: [
-//               Text('Date: ${day['date']}'),
-//               ListView.builder(
-//                 shrinkWrap: true,
-//                 itemCount: projects.length,
-//                 itemBuilder: (context, index) {
-//                   var project = projects[index];
-//                   return ListTile(
-//                     title: Text(project['name'] ?? 'Unknown Project'),
-//                     subtitle: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text('Check-in Time: ${project['login'] ?? ''}'),
-//                         Text('Check-out Time: ${project['logout'] ?? ''}'),
-//                         Text('Check-in Location: ${project['checkin_location'] ?? ''}'),
-//                         Text('Check-out Location: ${project['checkout_location'] ?? ''}'),
-//                         Text('Notes: ${project['notes'] ?? ''}'),
-//                         Divider(),
-//                       ],
-//                     ),
-//                   );
-//                 },
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
+import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:attendanaceapp/screens/viewmore_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -159,6 +13,7 @@ class EmployeeDetailsPage extends StatefulWidget {
   EmployeeDetailsPage({
     required this.employeeName,
     required this.employeeId,
+
   });
 
   @override
@@ -168,12 +23,15 @@ class EmployeeDetailsPage extends StatefulWidget {
 class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
   late List<Map<String, dynamic>> allEmployeeData;
   late String selectedDate;
+  late String employeeImageUrl; 
 
   @override
   void initState() {
     super.initState();
     selectedDate = DateFormat('yyyy-MMM-dd').format(DateTime.now());
     allEmployeeData = [];
+    employeeImageUrl = ''; 
+    fetchEmployeeImageUrl(widget.employeeId);
 
     FirebaseFirestore.instance
         .collection('emp_daily_activity')
@@ -193,6 +51,33 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
       print('Error fetching employee data: $error');
     });
   }
+
+   Future<void> fetchEmployeeImageUrl(String employeeId) async {
+  try {
+    // Assuming you have a Firestore collection named 'Employees'
+    CollectionReference employeesCollection = FirebaseFirestore.instance.collection('Employees');
+
+    // Fetch the document where 'id' is equal to the provided employeeId
+    QuerySnapshot querySnapshot = await employeesCollection.where('id', isEqualTo: employeeId).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Assuming each employee has a unique 'id', so there should be at most one document
+      // Retrieve the 'photo_url' field from the document
+      String imageUrl = querySnapshot.docs.first['photo_url'];
+
+      setState(() {
+        // Update the state variable with the fetched image URL
+        employeeImageUrl = imageUrl;
+      });
+    } else {
+      // No matching document found for the given employeeId
+      print('Employee not found for ID: $employeeId');
+    }
+  } catch (error) {
+    print('Error fetching employee image URL: $error');
+  }
+}
+
 
   Future<String?> getLocationString(double latitude, double longitude) async {
     final apiKey = '4103461bf25c447e8f3add63b149abbb';
@@ -219,21 +104,55 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Employee Details - ${widget.employeeName}'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 20),
-          Text(
-            'Select a day to view details:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          _buildDateButtons(),
-          SizedBox(height: 20),
-          _buildDetailsContainer(),
-        ],
+      appBar: AppbarAdmin('Employee Details - ${widget.employeeName}'),
+     body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                     child: CircleAvatar(
+                      radius: 75,
+                      backgroundImage: NetworkImage(employeeImageUrl), // Replace with the actual URL or ImageProvider
+                    ),
+                  ),
+                  SizedBox(width: 25),
+                  Text(
+                    widget.employeeName,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildDateButtons(),
+            SizedBox(height: 17),
+            Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AnalyticsDashboard(allEmployeeData:allEmployeeData,), // Replace with your actual page
+                    ),
+                  );
+                },
+                child: Text(
+                  'view more...',
+                  style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildDetailsContainer(),
+          ],
+        ),
       ),
     );
   }
@@ -250,132 +169,201 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
       });
 
     return Container(
-      height: 40,
+      height: 60,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: recentDates.length > 6 ? 6 : recentDates.length,
         itemBuilder: (context, index) {
           var date = recentDates[index];
-          return ElevatedButton(
-            onPressed: () {
+          return GestureDetector(
+            onTap: () {
               print('Button clicked for date: $date');
               setState(() {
                 selectedDate = date;
               });
             },
-            child: Text(date),
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: selectedDate == date ? Colors.blue.withOpacity(0.1) : Colors.white,
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(
+                  color: const Color.fromARGB(255, 90, 90, 90).withOpacity(0.2),
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    date,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                ),
+              ),
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildDetailsContainer() {
-    var projectsForSelectedDate = allEmployeeData.where((day) {
-      return day['date'] == selectedDate;
-    }).toList();
+ Widget _buildDetailsContainer() {
+  var projectsForSelectedDate = allEmployeeData.where((day) {
+    return day['date'] == selectedDate;
+  }).toList();
 
-    print(
-        'Projects for selected date ($selectedDate): $projectsForSelectedDate');
+  print('Projects for selected date ($selectedDate): $projectsForSelectedDate');
 
-    return Expanded(
-      child: ListView.builder(
-        itemCount: projectsForSelectedDate.length,
-        itemBuilder: (context, index) {
-          var day = projectsForSelectedDate[index];
-          var projects = day['projects'] as List<dynamic>;
+  return Column(
+    children: projectsForSelectedDate.map((day) {
+      var projects = day['projects'] as List<dynamic>;
 
-          return Column(
-            children: [
-              Text('Date: ${day['date']}'),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: projects.length,
-                itemBuilder: (context, index) {
-                  var project = projects[index];
-                  String checkinLocationString =
-                      project['checkin_location'] ?? '';
-                  String checkoutLocationString =
-                      project['checkout_location'] ?? '';
+      return Column(
+        children: [
+          // Text('Date: ${day['date']}'),
+          SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), // To prevent scrolling conflicts
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                var project = projects[index];
+                String checkinLocationString = project['checkin_location'] ?? '';
+                String checkoutLocationString = project['checkout_location'] ?? '';
 
-                  List<String> checkinCoordinates =
-                      checkinLocationString.split(', ');
-                  List<String> checkoutCoordinates =
-                      checkoutLocationString.split(', ');
+                List<String> checkinCoordinates = checkinLocationString.split(', ');
+                List<String> checkoutCoordinates = checkoutLocationString.split(', ');
 
-                  double checkinLatitude =
-                      double.parse(checkinCoordinates[0].split(': ')[1]);
-                  double checkinLongitude =
-                      double.parse(checkinCoordinates[1].split(': ')[1]);
+                double checkinLatitude = double.parse(checkinCoordinates[0].split(': ')[1]);
+                double checkinLongitude = double.parse(checkinCoordinates[1].split(': ')[1]);
 
-                  double checkoutLatitude =
-                      double.parse(checkoutCoordinates[0].split(': ')[1]);
-                  double checkoutLongitude =
-                      double.parse(checkoutCoordinates[1].split(': ')[1]);
+                double checkoutLatitude = double.parse(checkoutCoordinates[0].split(': ')[1]);
+                double checkoutLongitude = double.parse(checkoutCoordinates[1].split(': ')[1]);
 
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return FutureBuilder<String?>(
-                        future: getLocationString(
-                            checkinLatitude, checkinLongitude),
-                        builder: (context, checkinSnapshot) {
-                          if (checkinSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // Or any loading indicator
-                          } else if (checkinSnapshot.hasError) {
-                            return Text('Error loading check-in location');
-                          } else {
-                            String? checkinLocation = checkinSnapshot.data;
+                return Builder(
+                  builder: (BuildContext context) {
+                    return FutureBuilder<String?>(
+                      future: getLocationString(checkinLatitude, checkinLongitude),
+                      builder: (context, checkinSnapshot) {
+                        if (checkinSnapshot.connectionState == ConnectionState.waiting) {
+                          return Transform.translate(
+                            offset: Offset(10.0, 0.0), // Adjust the offset to shift the indicator
+                            child: Transform.scale(
+                              scale: 0.1, // Adjust the scale to control the size of the circular indicator
+                              child: SizedBox(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                  strokeWidth: 1.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (checkinSnapshot.hasError) {
+                          return Text('Error loading check-in location');
+                        } else {
+                          String? checkinLocation = checkinSnapshot.data;
 
-                            return FutureBuilder<String?>(
-                              future: getLocationString(
-                                  checkoutLatitude, checkoutLongitude),
-                              builder: (context, checkoutSnapshot) {
-                                if (checkoutSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return CircularProgressIndicator(); // Or any loading indicator
-                                } else if (checkoutSnapshot.hasError) {
-                                  return Text(
-                                      'Error loading checkout location');
-                                } else {
-                                  String? checkoutLocation =
-                                      checkoutSnapshot.data;
+                          return FutureBuilder<String?>(
+                            future: getLocationString(checkoutLatitude, checkoutLongitude),
+                            builder: (context, checkoutSnapshot) {
+                              if (checkoutSnapshot.connectionState == ConnectionState.waiting) {
+                                return Transform.translate(
+                                  offset: Offset(10.0, 0.0), // Adjust the offset to shift the indicator
+                                  child: Transform.scale(
+                                    scale: 0.1, // Adjust the scale to control the size of the circular indicator
+                                    child: SizedBox(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                                        strokeWidth: 2.0,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              } else if (checkoutSnapshot.hasError) {
+                                return Text('Error loading checkout location');
+                              } else {
+                                String? checkoutLocation = checkoutSnapshot.data;
 
-                                  return ListTile(
+                                return Container(
+                                  margin: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 3,
+                                        offset: Offset(0, 2), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
                                     title: Text(
-                                        project['name'] ?? 'Unknown Project'),
+                                      project['name'] ?? 'Unknown Project',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Kanit-Bold',
+                                        fontSize: 17,
+                                      ),
+                                    ),
                                     subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            'Check-in Time: ${project['login'] ?? ''}'),
+                                          'Check-In Time: ${project['login'] ?? ''}',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.green,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                         Text(
-                                            'Check-in Location: ${checkinLocation ?? 'Unknown Location'}'),
+                                          'Check-In Location: ${checkinLocation ?? 'Unknown Location'}',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
                                         Text(
-                                            'Check-out Time: ${project['logout'] ?? ''}'),
+                                          'Check-Out Time: ${project['logout'] ?? ''}',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.orange,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                         Text(
-                                            'Check-out Location: ${checkoutLocation ?? 'Unknown Location'}'),
+                                          'Check-Out Location: ${checkoutLocation ?? 'Unknown Location'}',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
                                         Text(
-                                            'Notes: ${project['notes'] ?? ''}'),
-                                        Divider(),
+                                          'Notes: ${project['notes'] ?? ''}',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                  );
-                                }
-                              },
-                            );
-                          }
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }).toList(),
+  );
 }
+}
+
