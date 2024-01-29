@@ -40,10 +40,12 @@
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="ClockIn" >
-        <meta-data
+
+        <!--
+         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBFXrY4VgA3AhI4pXykGqWerXVJBCp0FbE" />
-
+        -->
         <activity
             android:name="com.example.attendanaceapp.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

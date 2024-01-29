@@ -1,4 +1,3 @@
-
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
 import 'package:attendanaceapp/components/app_bar.dart';
@@ -31,10 +30,11 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarAdmin('Home-Page'),
+      appBar: AppbarAdminHome('Home-Page'),
       body: EmployeeCardList(),
       bottomNavigationBar: BottomAppBar(
         elevation: 9,
@@ -135,17 +135,17 @@ class EmployeeCardList extends StatelessWidget {
           return Center(child: Text('No records found for the present day.'));
         }
 
-        return ListView(
-          children: groupedProjects.entries.map((entry) {
-            var employeeName = entry.key;
-            var projects = entry.value;
-
-            return EmployeeCard(
-              employeeName: employeeName,
-              projects: projects,
-            );
-          }).toList(),
-        );
+         return  
+        ListView(
+            children: groupedProjects.entries.map((entry) {
+              var employeeName = entry.key;
+              var projects = entry.value;
+              return EmployeeCard(
+                employeeName: employeeName,
+                projects: projects,
+              );
+            }).toList(),
+          );
       },
     );
   }
@@ -171,126 +171,226 @@ class _EmployeeCardState extends State<EmployeeCard> {
     super.initState();
     selectedProject = widget.projects.first;
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to the details page and pass the necessary data
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EmployeeDetailsPage(employeeName: widget.employeeName,
-              employeeId: widget.projects.first['id'], // Assuming employee ID is stored in the first project
-             ),
+@override
+Widget build(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      // Navigate to the details page and pass the necessary data
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmployeeDetailsPage(
+            employeeName: widget.employeeName,
+            employeeId: widget.projects.first['id'], // Assuming employee ID is stored in the first project
           ),
-        );
-      },
-      child: Card(
-        margin: EdgeInsets.all(9.0),
-        elevation: 9,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
         ),
-        child: Column(
-          children: [
-            _buildDropDown(),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(vertical: 15.0),
-              title: Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Text(
+      );
+    },
+    child: Card(
+      margin: EdgeInsets.all(9.0),
+      elevation: 9,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+  padding: const EdgeInsets.only(left: 25.0),
+                // Align employee name to the left
+               child: Text(
                   widget.employeeName,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: 25,
+                  ),
                 ),
-              ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                ),
+                // Align dropdown to the right
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          'Login Time: ${selectedProject['login'] ?? ''}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
+  padding: const EdgeInsets.only(right: 25.0),
+             child:   Container(
+                  
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color.fromARGB(255, 182, 216, 245).withOpacity(0.2),
+                  ),
+                  child: DropdownButton<Map<String, dynamic>>(
+                    value: selectedProject,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    underline: Container(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedProject = value!;
+                      });
+                    },
+                    items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>((project) {
+                      return DropdownMenuItem<Map<String, dynamic>>(
+                        value: project,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0), // Add padding inside the dropdown items
+                          child: Text(project['name'] ?? 'Unknown Project'),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          'Logout Time: ${selectedProject['logout'] ?? ''}',
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                            color: Colors.orange,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
+                      );
+                    }).toList(),
                   ),
                 ),
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    'Notes: ${selectedProject['notes'] ?? ''}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
-                ),
-                SizedBox(height: 10),
-                // Display Google Map with Check-in and Check-out locations
-                Container(
-                  height: 200,
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target:
-                          _parseLocation(selectedProject['checkin_location']),
-                      zoom: 15,
-                    ),
-                    markers: Set.from([
-                      Marker(
-                        markerId: MarkerId('checkIn'),
-                        position:
-                            _parseLocation(selectedProject['checkin_location']),
-                        infoWindow: InfoWindow(title: 'Check-in Location'),
-                      ),
-                      Marker(
-                        markerId: MarkerId('checkOut'),
-                        position: _parseLocation(
-                            selectedProject['checkout_location']),
-                        infoWindow: InfoWindow(title: 'Check-out Location'),
-                      ),
-                    ]),
-                  ),
                 ),
               ],
             ),
           ),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(vertical:15.0),
+            title: Padding(
+              padding: const EdgeInsets.only(top: 5.0), 
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                         Container(
+                          height: 60,
+                          width: 150,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
+    color: Color.fromARGB(255, 114, 161, 248).withOpacity(0.2), // Adjust the color as needed
+  ),
+             child: Center(
+    child: Align(
+      alignment: Alignment.center,
+       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.lock_clock_rounded,
+            color: Color.fromARGB(255, 13, 105, 243),
+            size: 24.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+          ),
+                     
+                     Text(
+                            'Login Time: ${selectedProject['login'] ?? ''}',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+        ],
+                        ),
+                      
+    ),
+    ),
+             ),     
+                    Container(
+                     
+              padding: const EdgeInsets.only(right: 2.0),
+                        height: 60,
+                         width: 150,
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
+              color: Colors.orange.withOpacity(0.2), // Adjust the color as needed
+  ),
+  child: Center(
+    child: Align(
+      alignment: Alignment.center,
+       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.lock_clock,
+            color: Color.fromARGB(255, 243, 59, 13),
+            size: 24.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+          ),
+       Text(
+          'Logout Time: ${selectedProject['logout'] ?? ''}',
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            color: Colors.orange,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),  
+        ],
+    ),
+    ),              
+  ),
+),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      'Notes: ${selectedProject['notes'] ?? ''}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15,color: Colors.grey),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  // Display Google Map with Check-in and Check-out locations
+              
+              Container(
+                
+                    height: 200,
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target:
+                            _parseLocation(selectedProject['checkin_location']),
+                        zoom: 15,
+                      ),
+                      markers: Set.from([
+                        Marker(
+                          markerId: MarkerId('checkIn'),
+                          position:
+                              _parseLocation(selectedProject['checkin_location']),
+                          infoWindow: InfoWindow(title: 'Check-in Location'),
+                        ),
+                        Marker(
+                          markerId: MarkerId('checkOut'),
+                          position: _parseLocation(
+                              selectedProject['checkout_location']),
+                          infoWindow: InfoWindow(title: 'Check-out Location'),
+                        ),
+                      ]),
+                    ),
+                  ),
+                  
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
 // Widget _buildDropDown() {
-//   return ClipRRect(
-//     borderRadius: BorderRadius.circular(10.0), // Adjust the circular border radius as needed
+//   return Padding(
+//     padding: const EdgeInsets.all(8.0),
 //     child: Container(
-//       color: Colors.white, // Set the background color of the dropdown
+//       height: 40,
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(20),
+//         color: const Color.fromARGB(255, 182, 216, 245).withOpacity(0.2),
+//       ), // Set the background color of the dropdown
 //       child: DropdownButton<Map<String, dynamic>>(
 //         value: selectedProject,
 //         onChanged: (value) {
@@ -312,40 +412,55 @@ class _EmployeeCardState extends State<EmployeeCard> {
 //   );
 // }
 
-  Widget _buildDropDown() {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: ClipRRect(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15.0),
-        ),
-        child: Container(
-          color: Colors.white,
-          child: DropdownButton<Map<String, dynamic>>(
-            value: selectedProject,
-            onChanged: (value) {
-              setState(() {
-                selectedProject = value!;
-              });
-            },
-            items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>(
-              (project) {
-                return DropdownMenuItem<Map<String, dynamic>>(
-                  value: project,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(project['name'] ?? 'Unknown Project'),
-                  ),
-                );
-              },
-            ).toList(),
-          ),
-        ),
-      ),
-    );
-  }
+//  Widget _buildDropDown() {
+//   return Positioned(
+//     top: 0,
+//     left: 0,
+//     right: 0,
+//     child: ClipRRect(
+//       borderRadius: BorderRadius.vertical(
+//         top: Radius.circular(15.0),
+//       ),
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.grey.withOpacity(0.5),
+//               spreadRadius: 2,
+//               blurRadius: 5,
+//               offset: Offset(0, 3),
+//             ),
+//           ],
+//         ),
+//         child: DropdownButton<Map<String, dynamic>>(
+//           value: selectedProject,
+//           onChanged: (value) {
+//             setState(() {
+//               selectedProject = value!;
+//             });
+//           },
+//           items: widget.projects.map<DropdownMenuItem<Map<String, dynamic>>>(
+//             (project) {
+//               return DropdownMenuItem<Map<String, dynamic>>(
+//                 value: project,
+//                 child: Padding(
+//                   padding: const EdgeInsets.all(8.0),
+//                   child: Text(
+//                     project['name'] ?? 'Unknown Project',
+//                     style: TextStyle(decoration: TextDecoration.none),
+//                   ),
+//                 ),
+//               );
+//             },
+//           ).toList(),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
 
   LatLng _parseLocation(String locationString) {
     var coordinates = locationString
