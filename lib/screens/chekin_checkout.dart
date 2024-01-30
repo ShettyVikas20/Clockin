@@ -603,7 +603,7 @@ Future<void> _saveCheckOutTime() async {
                   itemDashboard('DashBoard', CupertinoIcons.book_circle, Colors.blue,(){
                      Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DashBoard(name: widget.name, imageUrl: widget.imageUrl,)),
+              MaterialPageRoute(builder: (context) => DashBoard(id: widget.id, imageUrl: widget.imageUrl,name: widget.name,)),
               );
                   
                   }),

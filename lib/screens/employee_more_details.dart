@@ -1,4 +1,5 @@
 import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:attendanaceapp/screens/dashboard_emp.dart';
 import 'package:attendanaceapp/screens/viewmore_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +25,10 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
   late List<Map<String, dynamic>> allEmployeeData;
   late String selectedDate;
   late String employeeImageUrl; 
+
+
+
+
 
   @override
   void initState() {
@@ -103,6 +108,7 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppbarAdmin('Employee Details - ${widget.employeeName}'),
      body: SingleChildScrollView(
@@ -139,7 +145,8 @@ class _EmployeeDetailsPageState extends State<EmployeeDetailsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AnalyticsDashboard(allEmployeeData: allEmployeeData,), // Replace with your actual page
+                    // builder: (context) => AnalyticsDashboard(allEmployeeData: allEmployeeData, employeeId: widget.employeeId),
+                    builder: (context) => DashBoard(id:widget.employeeId,imageUrl:employeeImageUrl,name: widget.employeeName,),
                     ),
                   );
                 },

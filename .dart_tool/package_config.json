@@ -206,6 +206,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "flutter_calendar_carousel",
+      "rootUri": "file:///C:/Users/PRO/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_calendar_carousel-2.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_launcher_icons",
       "rootUri": "file:///C:/Users/PRO/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.9.3",
       "packageUri": "lib/",
@@ -698,7 +704,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-01-29T05:13:16.254819Z",
+  "generated": "2024-01-30T09:13:51.332714Z",
   "generator": "pub",
   "generatorVersion": "3.1.0"
 }

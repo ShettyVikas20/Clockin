@@ -1,4 +1,5 @@
 import 'package:attendanaceapp/screens/admin_holiday_calender.dart';
+import 'package:attendanaceapp/screens/calender.dart';
 import 'package:flutter/material.dart';
 
 AppBar AppbarAdmin(String text) {
@@ -103,7 +104,8 @@ class CustomPopupMenuButton extends StatelessWidget {
       icon: Icon(Icons.menu, color: Colors.white),
       itemBuilder: (context) => [
         buildPopupMenuItem(1, Icons.calendar_month, "Calendar", context),
-        buildPopupMenuItem(3, Icons.chrome_reader_mode, "About", context),
+        buildPopupMenuItem(3, Icons.add, "Add Project", context),
+        buildPopupMenuItem(2, Icons.person, "Profile", context),
       ],
       offset: Offset(0, 100),
       color: Color.fromARGB(255, 91, 148, 233).withOpacity(0.3),
@@ -116,7 +118,7 @@ class CustomPopupMenuButton extends StatelessWidget {
       value: value,
       child: GestureDetector(
         onTap: () {
-          handlePopupMenuItemClick(value, context); // Pass the context to handle navigation
+          handlePopupMenuItemClick(value, context);
         },
         child: Row(
           children: [
@@ -125,7 +127,7 @@ class CustomPopupMenuButton extends StatelessWidget {
             Text(
               text,
               style: TextStyle(
-                color:  Color.fromARGB(255, 2, 44, 78),
+                color: Color.fromARGB(255, 2, 44, 78),
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -141,10 +143,50 @@ class CustomPopupMenuButton extends StatelessWidget {
       case 1: // Calendar
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) =>  MyHomePage()), // Replace CalendarPage with your actual page
+          MaterialPageRoute(builder: (context) => Home()), // Replace Home with your actual page
         );
+        break;
+      case 3: // Add Project
+        _showAddProjectDialog(context);
         break;
       // Add more cases for other menu items if needed
     }
+  }
+
+  void _showAddProjectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            width: 100,
+            height: 600,
+            padding: EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+           child: Column(
+              children: [
+               
+              // Your dialog content goes here
+
+              // Add a button at the bottom
+              SizedBox(height: 20), // Adjust spacing as needed
+              ElevatedButton(
+                onPressed: () {
+                  // Add your button action here
+                  Navigator.pop(context); // Close the dialog if needed
+                },
+                child: Text('Add Project'),
+              ),
+               
+              ],
+            ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
