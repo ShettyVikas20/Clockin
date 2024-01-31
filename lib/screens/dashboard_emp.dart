@@ -273,10 +273,6 @@
 //     );
 //   }
 // }
-
-
-
-
 import 'package:attendanaceapp/components/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -432,7 +428,7 @@ class _DashBoardState extends State<DashBoard> {
     CollectionReference<Map<String, dynamic>> collection =
         FirebaseFirestore.instance.collection(collectionName);
 
-    DocumentSnapshot<Map<String, dynamic>> document =
+    DocumentSnapshot<Map<String, dynamic>> document =  
         await collection.doc(documentId).get();
 
     if (document.exists &&
@@ -470,137 +466,163 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarEmp('DashBoard'),
+      appBar: AppbarAdmin('DashBoard'),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              Container(
+              Row(
+              children:[
+                Container(
                 width: 150,
                 height: 150,
-                margin: EdgeInsets.only(top: 60),
+                margin: EdgeInsets.only(left: 20,top: 40),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: const Color.fromARGB(255, 243, 181, 89), width: 4),
+                      color: Color.fromARGB(255, 79, 224, 243), width: 4),
                   image: DecorationImage(
                     image: NetworkImage(widget.imageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
+              const SizedBox(width: 26),
+              Padding(
+  padding: EdgeInsets.only(top: 68.0),
+             child: Text(
                 widget.name,
                 style: TextStyle(
                   fontSize: 25,
                   fontFamily: 'Kanit-Bold',
                 ),
               ),
+              ),
+              ],
+              ),
               const SizedBox(height: 66),
-              FutureBuilder<double>(
-                future: calculateTotalAttendance(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(
-                      strokeWidth: 10,
-                      color: Colors.blue,
-                    );
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return Text('Error');
-                  } else {
-                    double totalAttendance = snapshot.data ?? 0.0;
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 110,
-                          height: 110,
-                          child: CircularProgressIndicator(
-                            value: totalAttendance,
-                            strokeWidth: 10,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          '${(totalAttendance * 100).toInt()}%',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'TOTAL ATTENDANCE IN THIS MONTH',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 134, 134, 134)),
-              ),
-              SizedBox(height: 70),
-              FutureBuilder<double>(
-                future: calculateTotalAttendance(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(
-                      strokeWidth: 10,
-                      color: const Color.fromARGB(255, 243, 33, 33),
-                    );
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return Text('Error');
-                  } else {
-                    double totalAttendance = snapshot.data ?? 0.0;
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 110,
-                          height: 110,
-                          child: CircularProgressIndicator(
-                            value: totalAttendance,
-                            strokeWidth: 10,
-                            color: const Color.fromARGB(255, 243, 40, 33),
-                          ),
-                        ),
-                        Text(
-                          '${((1 - totalAttendance) * 100).toInt()}%',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'ON LEAVE',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 134, 134, 134)),
-              ),
-              const SizedBox(height: 55),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildCircularProgress(0.75, 'Work From Home'),
-                  const SizedBox(width: 16),
-                  _buildCircularProgress(0.60, 'In Office'),
-                  const SizedBox(width: 16),
-                  _buildCircularProgress(0.90, 'On Leave'),
+                  // Widget 1 (Total Attendance)
+                  Column(
+                    children: [
+                      FutureBuilder<double>(
+                        future: calculateTotalAttendance(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(
+                              strokeWidth: 10,
+                              color: Colors.blue,
+                            );
+                          } else if (snapshot.hasError) {
+                            print('Error: ${snapshot.error}');
+                            return Text('Error');
+                          } else {
+                            double totalAttendance = snapshot.data ?? 0.0;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 110,
+                                  height: 110,
+                                  child: CircularProgressIndicator(
+                                    value: totalAttendance,
+                                    strokeWidth: 10,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                Text(
+                                  '${(totalAttendance * 100).toInt()}%',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'TOTAL ATTENDANCE',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 134, 134, 134)),
+                      ),
+                      SizedBox(height: 50),
+                    ],
+                  ),
+                  // Widget 2 (On Leave)
+                  Column(
+                    children: [
+                      FutureBuilder<double>(
+                        future: calculateTotalAttendance(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(
+                              strokeWidth: 10,
+                              color: const Color.fromARGB(255, 243, 33, 33),
+                            );
+                          } else if (snapshot.hasError) {
+                            print('Error: ${snapshot.error}');
+                            return Text('Error');
+                          } else {
+                            double totalAttendance = snapshot.data ?? 0.0;
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 110,
+                                  height: 110,
+                                  child: CircularProgressIndicator(
+                                    value: totalAttendance,
+                                    strokeWidth: 10,
+                                    color:
+                                        const Color.fromARGB(255, 243, 40, 33),
+                                  ),
+                                ),
+                                Text(
+                                  '${((1 - totalAttendance) * 100).toInt()}%',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'ON LEAVE',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 134, 134, 134)),
+                      ),
+                      const SizedBox(height: 55),
+                    ],
+                  ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Total Time Worked on Each Project:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,fontFamily: 'Kanti-Bold'),
                 ),
               ),
+  Card(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
+  ),
+   // Adjust the elevation as needed
+  color: Color.fromARGB(255, 86, 136, 241).withOpacity(0.1), // Adjust the background color as needed
+  child: Container(
+    padding: const EdgeInsets.all(16.0),
+    child:
               FutureBuilder<Map<String, Duration>>(
                 future: calculateProjectWiseHours(),
                 builder: (context, snapshot) {
@@ -621,7 +643,7 @@ class _DashBoardState extends State<DashBoard> {
                             (entry) => Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Project ${entry.key}: ${entry.value.inHours} hours ${entry.value.inMinutes.remainder(60)} minutes',
+                                ' ${entry.key}: ${entry.value.inHours} hours ${entry.value.inMinutes.remainder(60)} minutes',
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
@@ -631,9 +653,13 @@ class _DashBoardState extends State<DashBoard> {
                   }
                 },
               ),
+              ),
+  ),
+               
             ],
-          ),
+        
         ),
+      ),
       ),
     );
   }

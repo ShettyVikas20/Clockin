@@ -98,7 +98,7 @@ class _EmployeeHistoryPageState extends State<EmployeeHistoryPage> {
                       'Name: ${widget.employeeName}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'lemon',
+                        fontFamily: 'Kanit-Bold',
                         fontSize: 18.0,
                       ),
                     ),
