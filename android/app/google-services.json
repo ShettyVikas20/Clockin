@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "23579168359-63ftk1h0vbusb6m71gab0bfanb3p50a2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.attendanaceapp",
+            "certificate_hash": "90a56df1acc15e6ad5d48aaece7dd14e2d4f5412"
+          }
+        },
+        {
           "client_id": "23579168359-p56g4n5uucfr8l3oo05q8koo5kec4rba.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "23579168359-p56g4n5uucfr8l3oo05q8koo5kec4rba.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "23579168359-q8g628bfckgepkspdo17knn83dkqtgfp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.attendanaceapp"
+              }
             }
           ]
         }

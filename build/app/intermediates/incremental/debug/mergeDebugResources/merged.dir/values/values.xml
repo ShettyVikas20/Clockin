@@ -143,6 +143,7 @@
     <string name="fallback_menu_item_copy_link">Copy link</string>
     <string name="fallback_menu_item_open_in_browser">Open in browser</string>
     <string name="fallback_menu_item_share_link">Share link</string>
+    <string name="fcm_fallback_notification_channel_label">Miscellaneous</string>
     <string name="gcm_defaultSenderId" translatable="false">23579168359</string>
     <string name="google_api_key" translatable="false">AIzaSyBqyk7LtlZOKl_iSdZTJTtgV19RPyzcR2c</string>
     <string name="google_app_id" translatable="false">1:23579168359:android:14cafc1de553fa3b1a8ec2</string>

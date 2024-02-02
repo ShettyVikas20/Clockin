@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>23579168359-q8g628bfckgepkspdo17knn83dkqtgfp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.23579168359-q8g628bfckgepkspdo17knn83dkqtgfp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>23579168359-63ftk1h0vbusb6m71gab0bfanb3p50a2.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA_8dLdh_H4v3NjV5qQfDz7GX9jbSOHe78</string>
+	<key>GCM_SENDER_ID</key>
+	<string>23579168359</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.attendanaceapp</string>
+	<key>PROJECT_ID</key>
+	<string>attendance-manager-44cf8</string>
+	<key>STORAGE_BUCKET</key>
+	<string>attendance-manager-44cf8.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:23579168359:ios:728c648b95c1c9ed1a8ec2</string>
+</dict>
+</plist>

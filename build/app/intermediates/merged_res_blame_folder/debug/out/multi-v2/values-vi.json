@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.attendanaceapp-mergeDebugResources-27:/values-vi/values-vi.xml",
+            "outputFile": "com.example.attendanaceapp-mergeDebugResources-29:/values-vi/values-vi.xml",
             "map": [
                 {
                     "source": "C:\\Users\\PRO\\.gradle\\caches\\transforms-3\\675374a81f79f0172317d524d18c8d85\\transformed\\jetified-play-services-base-18.0.1\\res\\values-vi\\values.xml",

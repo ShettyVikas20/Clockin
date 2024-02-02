@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.attendanaceapp-mergeDebugResources-27:/values-it/values-it.xml",
+            "outputFile": "com.example.attendanaceapp-mergeDebugResources-29:/values-it/values-it.xml",
             "map": [
                 {
                     "source": "C:\\Users\\PRO\\.gradle\\caches\\transforms-3\\b4e60b8108bacb2e8d207f4f27b66025\\transformed\\browser-1.4.0\\res\\values-it\\values-it.xml",
