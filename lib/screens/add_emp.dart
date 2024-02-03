@@ -82,11 +82,11 @@ String? _validateName(String value) {
   if (value.isEmpty) {
     setState(() {
       // Show Snackbar if the name is empty
-      showSnackbar('Please Enter Name');
+      // showSnackbar('Please Enter Name');
       // Set the error message for the TextField
       _nameValidationError = 'Please Enter Name';
     });
-    showSnackbar( 'Please Enter Name'); // Return the error message
+    // showSnackbar( 'Please Enter Name'); // Return the error message
   } else {
     // Clear any previous validation error
     setState(() {

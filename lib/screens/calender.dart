@@ -1,4 +1,6 @@
 import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:attendanaceapp/components/drawer_widget.dart';
+import 'package:attendanaceapp/components/snack_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -14,6 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -134,17 +137,18 @@ Future<void> _sendNotification(String title, String body) async {
     await FirebaseMessaging.instance.subscribeToTopic('all'); // Subscribe to a topic
 
     // Simulate a notification by displaying a SnackBar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(body),
-        action: SnackBarAction(
-          label: 'Dismiss',
-          onPressed: () {
-            // Perform an action when the user dismisses the notification
-          },
-        ),
-      ),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text(body),
+    //     action: SnackBarAction(
+    //       label: 'Dismiss',
+    //       onPressed: () {
+    //         // Perform an action when the user dismisses the notification
+    //       },
+    //     ),
+    //   ),
+    // );
+    showSuccess(context, 'Holiday Added Succesfully');
   } catch (e) {
     print('Error sending notification: $e');
   }
@@ -404,7 +408,7 @@ void _fetchHolidaysForMonth(DateTime targetDateTime) async {
     );
 
     return Scaffold(
-      appBar: AppbarAdmin( 'Calendar' ),
+      appBar: AppbarAdmin('Calendar'),  
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

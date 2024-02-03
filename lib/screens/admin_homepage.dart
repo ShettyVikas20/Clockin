@@ -390,10 +390,12 @@
 //   }
 // }
 
+import 'package:attendanaceapp/components/drawer_widget.dart';
 import 'package:attendanaceapp/screens/all_emp.dart';
 import 'package:attendanaceapp/screens/add_emp.dart';
 import 'package:attendanaceapp/components/app_bar.dart';
 import 'package:attendanaceapp/screens/employee_more_details.dart';
+import 'package:attendanaceapp/screens/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -423,10 +425,13 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarAdminHome('Home-Page'),
+        key: _scaffoldKey,
+      appBar:  AppbarAdminHome( 'Home-Page', _scaffoldKey ),
+       drawer: YourDrawerWidget(),
       body: EmployeeCardList(),
       bottomNavigationBar: BottomAppBar(
         elevation: 9,
@@ -442,9 +447,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   color: Color.fromARGB(255, 5, 62, 136),
                 ),
                 onPressed: () {
-                  // Perform actions specific to this page
-                },
-              ),
+                    Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  SignIn()), // Replace CalenderPage with your actual page
+              );
+            },
+          ),
+                
               IconButton(
                 icon: Icon(
                   Icons.people_alt_rounded,
