@@ -14,7 +14,7 @@ class YourDrawerWidget extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 39, 179, 235),
+                  Color.fromARGB(255, 5, 62, 136),
             Color.fromARGB(255, 182, 215, 247),
                   
                 ],

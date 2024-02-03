@@ -319,7 +319,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   Color _getProgressColor(double percentage) {
-    return Colors.grey; // Placeholder
+    return Color.fromARGB(255, 107, 219, 245); // Placeholder
   }
 
   Future<double> calculateTotalAttendance() async {
@@ -405,63 +405,95 @@ class _DashBoardState extends State<DashBoard> {
       return 0;
     }
 
-    int totalHolidaysTillToday = await fetchHolidays();
-    int totalWorkingDays = await calculateTotalWorkingDays();
-    int totalDaysTillToday = DateTime.now().day;
-    print(totalDaysTillToday);
-    double totalAttendance =
-        totalWorkingDays / (totalDaysTillToday - totalHolidaysTillToday);
-    print('Total Attendance: $totalAttendance');
+    int getNumberOfDaysInMonth() {
+      DateTime now = DateTime.now();
+      int year = now.year;
+      int month = now.month;
 
-    return totalAttendance;
+      // Calculate the first day of the next month
+      DateTime firstDayOfNextMonth = DateTime(year, month + 1, 1);
+
+      // Subtracting one day from the first day of the next month gives the last day of the current month
+      DateTime lastDayOfCurrentMonth =
+          firstDayOfNextMonth.subtract(Duration(days: 1));
+
+      // The day of the month gives the total number of days in the current month
+      int numberOfDaysInMonth = lastDayOfCurrentMonth.day;
+
+      return numberOfDaysInMonth;
+    }
+
+    try {
+      int totalHolidaysTillToday = await fetchHolidays();
+      int totalWorkingDays = await calculateTotalWorkingDays();
+      int totalDaysTillToday = DateTime.now().day;
+      int thisMonthDays = getNumberOfDaysInMonth();
+
+      print('Total Days Till Today: $totalDaysTillToday');
+
+      double totalAttendance =
+          totalWorkingDays / (thisMonthDays - totalHolidaysTillToday);
+
+      // Apply validation: Set totalAttendance to 0 if it's less than 0
+      totalAttendance = totalAttendance < 0 ? 0 : totalAttendance;
+
+      // Apply validation: Set totalAttendance to 100 if it's greater than 100
+      totalAttendance = totalAttendance > 100 ? 100 : totalAttendance;
+
+      print('Total Attendance: $totalAttendance');
+      return totalAttendance;
+    } catch (e) {
+      print('Error calculating total attendance: $e');
+    }
+
+    return 0; // Return a default value in case of errors
   }
 
   Future<Map<String, Duration>> calculateProjectWiseHours() async {
-  Map<String, Duration> projectDurationMap = {};
+    Map<String, Duration> projectDurationMap = {};
 
-  try {
-    // Replace 'emp_daily_activity' with your actual collection name
-    String collectionName = 'emp_daily_activity';
-    String documentId = '${widget.name}_${widget.id}_dailyactivity';
+    try {
+      // Replace 'emp_daily_activity' with your actual collection name
+      String collectionName = 'emp_daily_activity';
+      String documentId = '${widget.name}_${widget.id}_dailyactivity';
 
-    // Inline Firestore query
-    CollectionReference<Map<String, dynamic>> collection =
-        FirebaseFirestore.instance.collection(collectionName);
+      // Inline Firestore query
+      CollectionReference<Map<String, dynamic>> collection =
+          FirebaseFirestore.instance.collection(collectionName);
 
-    DocumentSnapshot<Map<String, dynamic>> document =  
-        await collection.doc(documentId).get();
+      DocumentSnapshot<Map<String, dynamic>> document =
+          await collection.doc(documentId).get();
 
-    if (document.exists &&
-        document.data() != null &&
-        document.data()!.containsKey('daily_activity')) {
-      List<dynamic> dailyActivities = document.data()!['daily_activity'];
+      if (document.exists &&
+          document.data() != null &&
+          document.data()!.containsKey('daily_activity')) {
+        List<dynamic> dailyActivities = document.data()!['daily_activity'];
 
-      for (var dayData in dailyActivities) {
-        for (var project in dayData['projects']) {
-          String projectName = project['name'];
-          String checkinTime = project['login'] ?? '';
-          String checkoutTime = project['logout'] ?? '';
+        for (var dayData in dailyActivities) {
+          for (var project in dayData['projects']) {
+            String projectName = project['name'];
+            String checkinTime = project['login'] ?? '';
+            String checkoutTime = project['logout'] ?? '';
 
-          if (checkinTime.isNotEmpty && checkoutTime.isNotEmpty) {
-            DateTime checkin = DateTime.parse('2022-01-01 $checkinTime');
-            DateTime checkout = DateTime.parse('2022-01-01 $checkoutTime');
+            if (checkinTime.isNotEmpty && checkoutTime.isNotEmpty) {
+              DateTime checkin = DateTime.parse('2022-01-01 $checkinTime');
+              DateTime checkout = DateTime.parse('2022-01-01 $checkoutTime');
 
-            Duration durationWorked = checkout.difference(checkin);
+              Duration durationWorked = checkout.difference(checkin);
 
-            projectDurationMap[projectName] =
-                (projectDurationMap[projectName] ?? Duration.zero) +
-                    durationWorked;
+              projectDurationMap[projectName] =
+                  (projectDurationMap[projectName] ?? Duration.zero) +
+                      durationWorked;
+            }
           }
         }
       }
+    } catch (e) {
+      print('Error calculating project-wise hours: $e');
     }
-  } catch (e) {
-    print('Error calculating project-wise hours: $e');
+
+    return projectDurationMap;
   }
-
-  return projectDurationMap;
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -472,33 +504,33 @@ class _DashBoardState extends State<DashBoard> {
           child: Column(
             children: [
               Row(
-              children:[
-                Container(
-                width: 150,
-                height: 150,
-                margin: EdgeInsets.only(left: 20,top: 40),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                      color: Color.fromARGB(255, 79, 224, 243), width: 4),
-                  image: DecorationImage(
-                    image: NetworkImage(widget.imageUrl),
-                    fit: BoxFit.cover,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    margin: EdgeInsets.only(left: 20, top: 40),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: Color.fromARGB(255, 79, 224, 243), width: 4),
+                      image: DecorationImage(
+                        image: NetworkImage(widget.imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 26),
-              Padding(
-  padding: EdgeInsets.only(top: 68.0),
-             child: Text(
-                widget.name,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontFamily: 'Kanit-Bold',
-                ),
-              ),
-              ),
-              ],
+                  const SizedBox(width: 26),
+                  Padding(
+                    padding: EdgeInsets.only(top: 68.0),
+                    child: Text(
+                      widget.name,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Kanit-Bold',
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 66),
               Row(
@@ -611,55 +643,57 @@ class _DashBoardState extends State<DashBoard> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Total Time Worked on Each Project:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,fontFamily: 'Kanti-Bold'),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanti-Bold'),
                 ),
               ),
-  Card(
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15.0), // Adjust the radius as needed
-  ),
-   // Adjust the elevation as needed
-  color: Color.fromARGB(255, 86, 136, 241).withOpacity(0.1), // Adjust the background color as needed
-  child: Container(
-    padding: const EdgeInsets.all(16.0),
-    child:
-              FutureBuilder<Map<String, Duration>>(
-                future: calculateProjectWiseHours(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(
-                      strokeWidth: 10,
-                      color: Colors.green, // You can change the color
-                    );
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return Text('Error');
-                  } else {
-                    Map<String, Duration> projectDurationMap =
-                        snapshot.data ?? {};
-                    return Column(
-                      children: projectDurationMap.entries
-                          .map(
-                            (entry) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                ' ${entry.key}: ${entry.value.inHours} hours ${entry.value.inMinutes.remainder(60)} minutes',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    );
-                  }
-                },
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      15.0), // Adjust the radius as needed
+                ),
+                // Adjust the elevation as needed
+                // color: Color.fromARGB(255, 56, 215, 233)
+                    // .withOpacity(0.1), // Adjust the background color as needed
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FutureBuilder<Map<String, Duration>>(
+                    future: calculateProjectWiseHours(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(
+                          strokeWidth: 10,
+                          color: Colors.green, // You can change the color
+                        );
+                      } else if (snapshot.hasError) {
+                        print('Error: ${snapshot.error}');
+                        return Text('Error');
+                      } else {
+                        Map<String, Duration> projectDurationMap =
+                            snapshot.data ?? {};
+                        return Column(
+                          children: projectDurationMap.entries
+                              .map(
+                                (entry) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    ' ${entry.key}: ${entry.value.inHours} hours ${entry.value.inMinutes.remainder(60)} minutes',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
-              ),
-  ),
-               
             ],
-        
+          ),
         ),
-      ),
       ),
     );
   }

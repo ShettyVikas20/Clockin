@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.attendanaceapp-mergeDebugResources-6:/values-v24/values-v24.xml",
+            "outputFile": "com.example.attendanaceapp-mergeDebugResources-30:/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\574a26920942d7749d16ce00bb78e52f\\transformed\\media-1.1.0\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\PRO\\.gradle\\caches\\transforms-3\\574a26920942d7749d16ce00bb78e52f\\transformed\\media-1.1.0\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

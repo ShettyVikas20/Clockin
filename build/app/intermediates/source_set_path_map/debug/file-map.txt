@@ -1,45 +1,45 @@
-com.example.attendanaceapp-debug-0 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\android\app\src\debug\res
-com.example.attendanaceapp-main-1 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\android\app\src\main\res
-com.example.attendanaceapp-google-services-2 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\generated\res\google-services\debug
-com.example.attendanaceapp-pngs-3 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\generated\res\pngs\debug
-com.example.attendanaceapp-resValues-4 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\generated\res\resValues\debug
-com.example.attendanaceapp-rs-5 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\generated\res\rs\debug
-com.example.attendanaceapp-mergeDebugResources-6 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\intermediates\incremental\debug\mergeDebugResources\merged.dir
-com.example.attendanaceapp-mergeDebugResources-7 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\intermediates\incremental\debug\mergeDebugResources\stripped.dir
-com.example.attendanaceapp-merged_res-8 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\app\intermediates\merged_res\debug
-com.example.attendanaceapp-packaged_res-9 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\cloud_firestore\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-10 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\firebase_auth\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-11 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\firebase_core\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-12 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\firebase_messaging\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-13 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\firebase_storage\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-14 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\flutter_local_notifications\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-15 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\flutter_plugin_android_lifecycle\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-16 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\geolocator_android\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-17 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\google_maps_flutter_android\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-18 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\google_sign_in_android\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-19 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\image_picker_android\intermediates\packaged_res\debug
-com.example.attendanaceapp-packaged_res-20 C:\GANGLIA TECHNOLOGIES.PVT\Clockin\Clockin\build\permission_handler_android\intermediates\packaged_res\debug
-com.example.attendanaceapp-jetified-core-ktx-1.10.1-21 C:\Users\HP\.gradle\caches\transforms-3\00eca30529ca1a7b25d3ef203c87cf3b\transformed\jetified-core-ktx-1.10.1\res
-com.example.attendanaceapp-jetified-play-services-auth-20.7.0-22 C:\Users\HP\.gradle\caches\transforms-3\09acd1e6df69b544bb24ff3e69311d5d\transformed\jetified-play-services-auth-20.7.0\res
-com.example.attendanaceapp-core-1.10.1-23 C:\Users\HP\.gradle\caches\transforms-3\1659c9dc29fb7465b6bfc2816f924362\transformed\core-1.10.1\res
-com.example.attendanaceapp-jetified-savedstate-1.2.1-24 C:\Users\HP\.gradle\caches\transforms-3\221494a610b3a722adc191d068dde924\transformed\jetified-savedstate-1.2.1\res
-com.example.attendanaceapp-jetified-activity-1.7.2-25 C:\Users\HP\.gradle\caches\transforms-3\44629b87651ec8ad66f6b01e0b526f17\transformed\jetified-activity-1.7.2\res
-com.example.attendanaceapp-lifecycle-viewmodel-2.6.1-26 C:\Users\HP\.gradle\caches\transforms-3\4d0fba10157435766c26a4528ce8905f\transformed\lifecycle-viewmodel-2.6.1\res
-com.example.attendanaceapp-jetified-play-services-maps-18.2.0-27 C:\Users\HP\.gradle\caches\transforms-3\52eb2b8341227963a8a64d89f7e58db0\transformed\jetified-play-services-maps-18.2.0\res
-com.example.attendanaceapp-jetified-startup-runtime-1.1.1-28 C:\Users\HP\.gradle\caches\transforms-3\53c6d096062461ff15a8a96ec7aee651\transformed\jetified-startup-runtime-1.1.1\res
-com.example.attendanaceapp-media-1.1.0-29 C:\Users\HP\.gradle\caches\transforms-3\574a26920942d7749d16ce00bb78e52f\transformed\media-1.1.0\res
-com.example.attendanaceapp-localbroadcastmanager-1.1.0-30 C:\Users\HP\.gradle\caches\transforms-3\5a1af5d57d29006c83616fc62819a061\transformed\localbroadcastmanager-1.1.0\res
-com.example.attendanaceapp-jetified-firebase-messaging-23.3.1-31 C:\Users\HP\.gradle\caches\transforms-3\6416141c0f1bde68feaab7759630448a\transformed\jetified-firebase-messaging-23.3.1\res
-com.example.attendanaceapp-jetified-lifecycle-viewmodel-savedstate-2.6.1-32 C:\Users\HP\.gradle\caches\transforms-3\64745a7f40aaaf068b6a55077e8b0b17\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\res
-com.example.attendanaceapp-jetified-play-services-base-18.0.1-33 C:\Users\HP\.gradle\caches\transforms-3\675374a81f79f0172317d524d18c8d85\transformed\jetified-play-services-base-18.0.1\res
-com.example.attendanaceapp-jetified-annotation-experimental-1.3.0-34 C:\Users\HP\.gradle\caches\transforms-3\7b4b85aaac499850ef204ebee844cc0f\transformed\jetified-annotation-experimental-1.3.0\res
-com.example.attendanaceapp-lifecycle-livedata-core-2.6.1-35 C:\Users\HP\.gradle\caches\transforms-3\8f2e6dbca9053b77974b7edb31710501\transformed\lifecycle-livedata-core-2.6.1\res
-com.example.attendanaceapp-core-runtime-2.2.0-36 C:\Users\HP\.gradle\caches\transforms-3\935f078b5d523424b9edd4cd73ad3ae0\transformed\core-runtime-2.2.0\res
-com.example.attendanaceapp-jetified-window-java-1.0.0-beta04-37 C:\Users\HP\.gradle\caches\transforms-3\981afee23352a7ed07a7f22c39d8b412\transformed\jetified-window-java-1.0.0-beta04\res
-com.example.attendanaceapp-browser-1.4.0-38 C:\Users\HP\.gradle\caches\transforms-3\b4e60b8108bacb2e8d207f4f27b66025\transformed\browser-1.4.0\res
-com.example.attendanaceapp-jetified-play-services-basement-18.2.0-39 C:\Users\HP\.gradle\caches\transforms-3\bb423b9b76250f9455c18b23e81be025\transformed\jetified-play-services-basement-18.2.0\res
-com.example.attendanaceapp-lifecycle-livedata-2.6.1-40 C:\Users\HP\.gradle\caches\transforms-3\c1ebd13258e282d5ba1bc209b84e1ede\transformed\lifecycle-livedata-2.6.1\res
-com.example.attendanaceapp-jetified-firebase-common-20.4.2-41 C:\Users\HP\.gradle\caches\transforms-3\c899f145794001b36b4ffde92dd8b583\transformed\jetified-firebase-common-20.4.2\res
-com.example.attendanaceapp-jetified-window-1.0.0-beta04-42 C:\Users\HP\.gradle\caches\transforms-3\debfbf90a2465fdd6e98dc208301c729\transformed\jetified-window-1.0.0-beta04\res
-com.example.attendanaceapp-jetified-profileinstaller-1.3.0-43 C:\Users\HP\.gradle\caches\transforms-3\e3f4f3b2bc9404a9843a9ba5a2e9b289\transformed\jetified-profileinstaller-1.3.0\res
-com.example.attendanaceapp-lifecycle-runtime-2.6.1-44 C:\Users\HP\.gradle\caches\transforms-3\eee1288b854bba7573b679e4124c0c3c\transformed\lifecycle-runtime-2.6.1\res
+com.example.attendanaceapp-jetified-core-ktx-1.10.1-0 C:\Users\PRO\.gradle\caches\transforms-3\00eca30529ca1a7b25d3ef203c87cf3b\transformed\jetified-core-ktx-1.10.1\res
+com.example.attendanaceapp-jetified-play-services-auth-20.7.0-1 C:\Users\PRO\.gradle\caches\transforms-3\09acd1e6df69b544bb24ff3e69311d5d\transformed\jetified-play-services-auth-20.7.0\res
+com.example.attendanaceapp-core-1.10.1-2 C:\Users\PRO\.gradle\caches\transforms-3\1659c9dc29fb7465b6bfc2816f924362\transformed\core-1.10.1\res
+com.example.attendanaceapp-jetified-savedstate-1.2.1-3 C:\Users\PRO\.gradle\caches\transforms-3\221494a610b3a722adc191d068dde924\transformed\jetified-savedstate-1.2.1\res
+com.example.attendanaceapp-jetified-activity-1.7.2-4 C:\Users\PRO\.gradle\caches\transforms-3\44629b87651ec8ad66f6b01e0b526f17\transformed\jetified-activity-1.7.2\res
+com.example.attendanaceapp-lifecycle-viewmodel-2.6.1-5 C:\Users\PRO\.gradle\caches\transforms-3\4d0fba10157435766c26a4528ce8905f\transformed\lifecycle-viewmodel-2.6.1\res
+com.example.attendanaceapp-jetified-play-services-maps-18.2.0-6 C:\Users\PRO\.gradle\caches\transforms-3\52eb2b8341227963a8a64d89f7e58db0\transformed\jetified-play-services-maps-18.2.0\res
+com.example.attendanaceapp-jetified-startup-runtime-1.1.1-7 C:\Users\PRO\.gradle\caches\transforms-3\53c6d096062461ff15a8a96ec7aee651\transformed\jetified-startup-runtime-1.1.1\res
+com.example.attendanaceapp-media-1.1.0-8 C:\Users\PRO\.gradle\caches\transforms-3\574a26920942d7749d16ce00bb78e52f\transformed\media-1.1.0\res
+com.example.attendanaceapp-localbroadcastmanager-1.1.0-9 C:\Users\PRO\.gradle\caches\transforms-3\5a1af5d57d29006c83616fc62819a061\transformed\localbroadcastmanager-1.1.0\res
+com.example.attendanaceapp-jetified-firebase-messaging-23.3.1-10 C:\Users\PRO\.gradle\caches\transforms-3\6416141c0f1bde68feaab7759630448a\transformed\jetified-firebase-messaging-23.3.1\res
+com.example.attendanaceapp-jetified-lifecycle-viewmodel-savedstate-2.6.1-11 C:\Users\PRO\.gradle\caches\transforms-3\64745a7f40aaaf068b6a55077e8b0b17\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\res
+com.example.attendanaceapp-jetified-play-services-base-18.0.1-12 C:\Users\PRO\.gradle\caches\transforms-3\675374a81f79f0172317d524d18c8d85\transformed\jetified-play-services-base-18.0.1\res
+com.example.attendanaceapp-jetified-annotation-experimental-1.3.0-13 C:\Users\PRO\.gradle\caches\transforms-3\7b4b85aaac499850ef204ebee844cc0f\transformed\jetified-annotation-experimental-1.3.0\res
+com.example.attendanaceapp-lifecycle-livedata-core-2.6.1-14 C:\Users\PRO\.gradle\caches\transforms-3\8f2e6dbca9053b77974b7edb31710501\transformed\lifecycle-livedata-core-2.6.1\res
+com.example.attendanaceapp-core-runtime-2.2.0-15 C:\Users\PRO\.gradle\caches\transforms-3\935f078b5d523424b9edd4cd73ad3ae0\transformed\core-runtime-2.2.0\res
+com.example.attendanaceapp-jetified-window-java-1.0.0-beta04-16 C:\Users\PRO\.gradle\caches\transforms-3\981afee23352a7ed07a7f22c39d8b412\transformed\jetified-window-java-1.0.0-beta04\res
+com.example.attendanaceapp-browser-1.4.0-17 C:\Users\PRO\.gradle\caches\transforms-3\b4e60b8108bacb2e8d207f4f27b66025\transformed\browser-1.4.0\res
+com.example.attendanaceapp-jetified-play-services-basement-18.2.0-18 C:\Users\PRO\.gradle\caches\transforms-3\bb423b9b76250f9455c18b23e81be025\transformed\jetified-play-services-basement-18.2.0\res
+com.example.attendanaceapp-lifecycle-livedata-2.6.1-19 C:\Users\PRO\.gradle\caches\transforms-3\c1ebd13258e282d5ba1bc209b84e1ede\transformed\lifecycle-livedata-2.6.1\res
+com.example.attendanaceapp-jetified-firebase-common-20.4.2-20 C:\Users\PRO\.gradle\caches\transforms-3\c899f145794001b36b4ffde92dd8b583\transformed\jetified-firebase-common-20.4.2\res
+com.example.attendanaceapp-jetified-window-1.0.0-beta04-21 C:\Users\PRO\.gradle\caches\transforms-3\debfbf90a2465fdd6e98dc208301c729\transformed\jetified-window-1.0.0-beta04\res
+com.example.attendanaceapp-jetified-profileinstaller-1.3.0-22 C:\Users\PRO\.gradle\caches\transforms-3\e3f4f3b2bc9404a9843a9ba5a2e9b289\transformed\jetified-profileinstaller-1.3.0\res
+com.example.attendanaceapp-lifecycle-runtime-2.6.1-23 C:\Users\PRO\.gradle\caches\transforms-3\eee1288b854bba7573b679e4124c0c3c\transformed\lifecycle-runtime-2.6.1\res
+com.example.attendanaceapp-debug-24 F:\Ganglia\Clockin\Clockin\android\app\src\debug\res
+com.example.attendanaceapp-main-25 F:\Ganglia\Clockin\Clockin\android\app\src\main\res
+com.example.attendanaceapp-google-services-26 F:\Ganglia\Clockin\Clockin\build\app\generated\res\google-services\debug
+com.example.attendanaceapp-pngs-27 F:\Ganglia\Clockin\Clockin\build\app\generated\res\pngs\debug
+com.example.attendanaceapp-resValues-28 F:\Ganglia\Clockin\Clockin\build\app\generated\res\resValues\debug
+com.example.attendanaceapp-rs-29 F:\Ganglia\Clockin\Clockin\build\app\generated\res\rs\debug
+com.example.attendanaceapp-mergeDebugResources-30 F:\Ganglia\Clockin\Clockin\build\app\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.example.attendanaceapp-mergeDebugResources-31 F:\Ganglia\Clockin\Clockin\build\app\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.example.attendanaceapp-merged_res-32 F:\Ganglia\Clockin\Clockin\build\app\intermediates\merged_res\debug
+com.example.attendanaceapp-packaged_res-33 F:\Ganglia\Clockin\Clockin\build\cloud_firestore\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-34 F:\Ganglia\Clockin\Clockin\build\firebase_auth\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-35 F:\Ganglia\Clockin\Clockin\build\firebase_core\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-36 F:\Ganglia\Clockin\Clockin\build\firebase_messaging\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-37 F:\Ganglia\Clockin\Clockin\build\firebase_storage\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-38 F:\Ganglia\Clockin\Clockin\build\flutter_local_notifications\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-39 F:\Ganglia\Clockin\Clockin\build\flutter_plugin_android_lifecycle\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-40 F:\Ganglia\Clockin\Clockin\build\geolocator_android\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-41 F:\Ganglia\Clockin\Clockin\build\google_maps_flutter_android\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-42 F:\Ganglia\Clockin\Clockin\build\google_sign_in_android\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-43 F:\Ganglia\Clockin\Clockin\build\image_picker_android\intermediates\packaged_res\debug
+com.example.attendanaceapp-packaged_res-44 F:\Ganglia\Clockin\Clockin\build\permission_handler_android\intermediates\packaged_res\debug
