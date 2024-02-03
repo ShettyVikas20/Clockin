@@ -1,10 +1,12 @@
 import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -24,7 +26,55 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _fetchHolidaysForMonth(_currentDate);
+    _configureFCM();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("FCM Message Received: ${message.notification?.body}");
+
+      // Display an in-app notification when the app is in the foreground
+      // You can customize this based on your UI design
+      _showInAppNotification(message.notification);
+    });
+
+    // Handle tapping on the notification when the app is in the background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("FCM Message Tapped: ${message.notification?.body}");
+
+      // Navigate to a specific screen or handle the tap as needed
+      _handleNotificationTap(message);
+    });
   }
+ Future<void> _configureFCM() async {
+    // Request permission for receiving push notifications (required on iOS)
+   FirebaseMessaging.instance.requestPermission(alert: true, badge: true, sound: true);
+
+    // Subscribe to a topic if needed
+    FirebaseMessaging.instance.subscribeToTopic('all');
+    
+     String? token = await FirebaseMessaging.instance.getToken();
+  // Print the device token
+  print('Device Token: $token');
+     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("FCM Message Received in Foreground: ${message.notification?.body}");
+    _showInAppNotification(message.notification);
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print("FCM Message Tapped: ${message.notification?.body}");
+    _handleNotificationTap(message);
+  });
+
+  }
+   void _showInAppNotification(RemoteNotification? notification) {
+    // You can use a package like 'flutter_local_notifications' to show in-app notifications
+    // Example: https://pub.dev/packages/flutter_local_notifications
+  }
+
+  // Handle tapping on the notification when the app is in the background
+  void _handleNotificationTap(RemoteMessage message) {
+    // Navigate to a specific screen or handle the tap as needed
+    // Example: Navigator.pushNamed(context, '/details');
+  }
+
 
 
  EventList<Event> _getMarkedDates() {
@@ -48,10 +98,8 @@ Widget _buildHolidayEvent(DateTime date) {
     ),
   );
 }
-
-
-
-  Future<void> _addHoliday(DateTime date, String description, String docName) async {
+////////////////////////////////////////////////////////////////////////////////////////////
+Future<void> _addHoliday(DateTime date, String description, String docName) async {
   try {
     await FirebaseFirestore.instance.collection('holidays').doc(docName).set(
       {
@@ -64,10 +112,62 @@ Widget _buildHolidayEvent(DateTime date) {
       },
       SetOptions(merge: true),
     );
+
+    // Send a notification after successfully saving the holiday
+    _sendNotification('Holiday Added', 'Holiday saved successfully!');
   } catch (e) {
     print('Error adding holiday: $e');
   }
 }
+void subscribeToTopic(String topic) async {
+  try {
+    await FirebaseMessaging.instance.subscribeToTopic(topic);
+    print('Subscribed to topic: $topic');
+  } catch (e) {
+    print('Error subscribing to topic: $e');
+  }
+}
+
+Future<void> _sendNotification(String title, String body) async {
+  try {
+    // You can customize the notification payload here
+    await FirebaseMessaging.instance.subscribeToTopic('all'); // Subscribe to a topic
+
+    // Simulate a notification by displaying a SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(body),
+        action: SnackBarAction(
+          label: 'Dismiss',
+          onPressed: () {
+            // Perform an action when the user dismisses the notification
+          },
+        ),
+      ),
+    );
+  } catch (e) {
+    print('Error sending notification: $e');
+  }
+}
+
+//   Future<void> _addHoliday(DateTime date, String description, String docName) async {
+//   try {
+//     await FirebaseFirestore.instance.collection('holidays').doc(docName).set(
+//       {
+//         'holidays': FieldValue.arrayUnion([
+//           {
+//             'date': Timestamp.fromDate(date),
+//             'description': description,
+//           },
+//         ]),
+//       },
+//       SetOptions(merge: true),
+//     );
+   
+//   } catch (e) {
+//     print('Error adding holiday: $e');
+//   }
+// }
 
 
   // Function to fetch holidays for the given month and update the marked date list
@@ -141,6 +241,7 @@ void _fetchHolidaysForMonth(DateTime targetDateTime) async {
       },
     );
   }
+/////////////////////////////////////////////////////////////////yooooooooo/////////////////
 
   void _showCircularDialog(DateTime date) async {
     String? description;
@@ -198,10 +299,12 @@ void _fetchHolidaysForMonth(DateTime targetDateTime) async {
                     children: [
                       SizedBox(height: 10),
                       Text(
-                        'Description:',
+                        'Happy Holiday🎊',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanti-Bold',
                           fontSize: 16.0,
+                          color:Colors.red,
                         ),
                       ),
                       SizedBox(height: 10),
@@ -301,9 +404,7 @@ void _fetchHolidaysForMonth(DateTime targetDateTime) async {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Calendar'),
-      ),
+      appBar: AppbarAdmin( 'Calendar' ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
