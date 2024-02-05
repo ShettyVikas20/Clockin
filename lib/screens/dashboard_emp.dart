@@ -405,42 +405,28 @@ class _DashBoardState extends State<DashBoard> {
       return 0;
     }
 
-    int getNumberOfDaysInMonth() {
-      DateTime now = DateTime.now();
-      int year = now.year;
-      int month = now.month;
-
-      // Calculate the first day of the next month
-      DateTime firstDayOfNextMonth = DateTime(year, month + 1, 1);
-
-      // Subtracting one day from the first day of the next month gives the last day of the current month
-      DateTime lastDayOfCurrentMonth =
-          firstDayOfNextMonth.subtract(Duration(days: 1));
-
-      // The day of the month gives the total number of days in the current month
-      int numberOfDaysInMonth = lastDayOfCurrentMonth.day;
-
-      return numberOfDaysInMonth;
-    }
-
     try {
       int totalHolidaysTillToday = await fetchHolidays();
       int totalWorkingDays = await calculateTotalWorkingDays();
       int totalDaysTillToday = DateTime.now().day;
-      int thisMonthDays = getNumberOfDaysInMonth();
+      // int thisMonthDays = getNumberOfDaysInMonth();
 
       print('Total Days Till Today: $totalDaysTillToday');
+      print('Total Working days till today: $totalWorkingDays');
+      print('total Holidays till today :$totalHolidaysTillToday');
 
       double totalAttendance =
-          totalWorkingDays / (thisMonthDays - totalHolidaysTillToday);
-
-      // Apply validation: Set totalAttendance to 0 if it's less than 0
-      totalAttendance = totalAttendance < 0 ? 0 : totalAttendance;
-
-      // Apply validation: Set totalAttendance to 100 if it's greater than 100
-      totalAttendance = totalAttendance > 100 ? 100 : totalAttendance;
+          totalWorkingDays / (totalDaysTillToday - totalHolidaysTillToday);
 
       print('Total Attendance: $totalAttendance');
+      if (totalAttendance > 1) {
+        totalAttendance = 1;
+      } else if (totalAttendance < 0) {
+        totalAttendance = 0;
+      } else {
+        totalAttendance = totalAttendance;
+      }
+
       return totalAttendance;
     } catch (e) {
       print('Error calculating total attendance: $e');
@@ -602,7 +588,7 @@ class _DashBoardState extends State<DashBoard> {
                             print('Error: ${snapshot.error}');
                             return Text('Error');
                           } else {
-                            double totalAttendance = snapshot.data ?? 0.0;
+                            double invertedAttendance = 1.0 - (snapshot.data ?? 0.0);
                             return Stack(
                               alignment: Alignment.center,
                               children: [
@@ -610,14 +596,14 @@ class _DashBoardState extends State<DashBoard> {
                                   width: 110,
                                   height: 110,
                                   child: CircularProgressIndicator(
-                                    value: totalAttendance,
+                                    value:invertedAttendance,
                                     strokeWidth: 10,
                                     color:
                                         const Color.fromARGB(255, 243, 40, 33),
                                   ),
                                 ),
                                 Text(
-                                  '${((1 - totalAttendance) * 100).toInt()}%',
+                                  '${((invertedAttendance) * 100).toInt()}%',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
@@ -656,7 +642,7 @@ class _DashBoardState extends State<DashBoard> {
                 ),
                 // Adjust the elevation as needed
                 // color: Color.fromARGB(255, 56, 215, 233)
-                    // .withOpacity(0.1), // Adjust the background color as needed
+                // .withOpacity(0.1), // Adjust the background color as needed
                 child: Container(
                   padding: const EdgeInsets.all(16.0),
                   child: FutureBuilder<Map<String, Duration>>(

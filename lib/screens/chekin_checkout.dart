@@ -653,10 +653,8 @@
 // }
 
 
-
-
-
 import 'package:attendanaceapp/screens/dashboard_emp.dart';
+import 'package:attendanaceapp/screens/emp_calender.dart';
 import 'package:attendanaceapp/screens/end_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -706,7 +704,69 @@ class _EmployeeHomePageState extends State<EmployeeHomePage> {
     notesController = TextEditingController();
     // Initialize employee projects
     _initEmployeeProjects();
+
+    // Check and add Sundays to holidays
+    _checkAndAddSundays();
+
   }
+
+   List<DateTime> _getSundaysInMonth(DateTime month) {
+    List<DateTime> sundays = [];
+    DateTime firstDay = DateTime(month.year, month.month, 1);
+    DateTime lastDay = DateTime(month.year, month.month + 1, 0);
+
+    for (DateTime day = firstDay; day.isBefore(lastDay); day = day.add(Duration(days: 1))) {
+      if (day.weekday == DateTime.sunday) {
+        sundays.add(day);
+      }
+    }
+
+    return sundays;
+  }
+
+  Future<void> _checkAndAddSundays() async {
+  // Get the current month and year
+  int currentMonth = DateTime.now().month;
+  int currentYear = DateTime.now().year;
+
+  // Document ID for 'holidays' collection
+  String documentId = 'month_$currentMonth\_$currentYear';
+
+  try {
+    CollectionReference<Map<String, dynamic>> collection =
+        FirebaseFirestore.instance.collection('holidays');
+
+    DocumentSnapshot<Map<String, dynamic>> document =
+        await collection.doc(documentId).get();
+
+    if (document.exists &&
+        document.data() != null &&
+        document.data()!['sundaysAdded'] == true) {
+      // Sundays are already added
+      print('Sundays are already added.');
+    } else {
+      // Sundays are not added, add them to 'holidays'
+      List<DateTime> sundays = _getSundaysInMonth(DateTime.now());
+
+      List<Map<String, dynamic>> holidaysData = sundays
+          .map((sunday) => {
+                'date': Timestamp.fromDate(sunday),
+                'description': 'Sunday',
+              })
+          .toList();
+
+      await collection.doc(documentId).set({
+        'sundaysAdded': true,
+        'holidays': holidaysData,
+      });
+
+      print('Sundays added to holidays.');
+    }
+  } catch (e) {
+    print('Error checking and adding Sundays: $e');
+  }
+}
+
 
   Future<void> _initEmployeeProjects() async {
     employeeProjects = await _getEmployeeProjects();
@@ -1294,7 +1354,12 @@ Future<void> _saveCheckOutTime() async {
                 children: [
                   itemDashboard('Check-In', CupertinoIcons.arrow_right_circle, Colors.green, _showCheckInDialog),
                   itemDashboard('Check-Out', CupertinoIcons.arrow_left_circle, Colors.orange, _showCheckOutDialog),
-                  itemDashboard('About', CupertinoIcons.question_circle, Colors.pinkAccent, () {}),
+                  itemDashboard('Calender', CupertinoIcons.calendar_circle, Colors.pinkAccent, () {
+                    Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DummyCalender()),
+              );
+                  }),
                   itemDashboard('DashBoard', CupertinoIcons.book_circle, Colors.blue,(){
                      Navigator.push(
               context,
