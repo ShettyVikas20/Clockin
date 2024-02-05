@@ -1,5 +1,7 @@
 import 'package:attendanaceapp/screens/add_emp.dart';
 import 'package:attendanaceapp/components/app_bar.dart';
+import 'package:attendanaceapp/screens/dashboard_emp.dart';
+import 'package:attendanaceapp/screens/entirehistory_calender.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'emp_details.dart';
@@ -46,6 +48,7 @@ class _AllEmployeesPhotosPageState extends State<AllEmployeesPhotosPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
+              // builder: (context) => UserProfilePage(),
               builder: (context) => UserProfilePage(),
             ),
           );
@@ -96,10 +99,13 @@ class EmployeePhotosList extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EmployeeHistoryPage(
-                      employeeName: data['name'],
-                      employeePhone: data['phone'],
-                    ),
+                    // builder: (context) => DashBoard(
+                    //   employeeId:data['id'],
+                    //   employeeImageUrl:data['photo_url'],
+                    //   employeeName: data['name'],
+                    // ),
+                    // builder:(context) => DashBoard(id: data['id'], imageUrl: data['photo_url'], name: data['name'])
+                    builder: (context) => EntireEmployeeHistroryInCalender(employeeId:data['id'],employeeName:data['name']),
                   ),
                 );
               },

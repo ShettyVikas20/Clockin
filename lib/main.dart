@@ -25,6 +25,7 @@
 //   }
 // }
 import 'package:attendanaceapp/firebase_options.dart';
+import 'package:attendanaceapp/screens/entirehistory_calender.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
       create: (context) => GoogleSignInProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home:  SplashScreen(),
       ),
     );
   }
